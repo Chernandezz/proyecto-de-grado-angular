@@ -3,9 +3,10 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'gen-home',
   templateUrl: './home.component.html',
-  styles: [
-  ]
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {
+  title = 'gen works!';
+  
 
 }
