@@ -4,10 +4,15 @@
     <form id="formulario" class="col-lg-6 col-md-12" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-lg-6">
+          <label class="form-label">Función objetivo:</label>
           <div class="mb-3">
-            <label class="form-label">Función objetivo:</label>
-            <input type="text" class="form-control" placeholder="Ejemplo: X^2 - 3X + 2"
-              value="x+x*2" formControlName="funcion">
+            <!-- Inside the <form> tag -->
+            <input type="text" class="form-control invalid" placeholder="Ejemplo: X^2 - 3X + 2"
+              formControlName="funcion">
+            <span class="form-text text-danger" *ngIf="isValidField('funcion')">
+              ¡Este campo es requerido!
+            </span>
+
           </div>
           <div class="mb-3">
             <label class="form-label">Tipo de selección:</label>
