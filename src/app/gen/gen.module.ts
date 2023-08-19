@@ -5,9 +5,16 @@ import { GenRoutingModule } from './gen-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GraphicsComponent } from './pages/graphics/graphics.component';
 import { LinesChartComponent } from './components/lines-chart/lines-chart.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [HomeComponent, GraphicsComponent, LinesChartComponent],
-  imports: [CommonModule, GenRoutingModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    GenRoutingModule,
+    ReactiveFormsModule,
+    NgApexchartsModule,
+    
+  ],
 })
 export class GenModule {}
