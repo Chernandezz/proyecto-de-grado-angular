@@ -1,6 +1,7 @@
 import * as math from 'mathjs';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { Individuo } from '../interfaces/Individuo';
+import { IndividuoPadre } from '../interfaces/IndividuoPadre';
 
 class AlgoritmoGenetico {
   private expresionFuncionObjetivo!: (params: any) => number;
@@ -25,8 +26,6 @@ class AlgoritmoGenetico {
   }
 
   private initializeConfiguration(agConfig: AlgorithmOptions) {
-    console.log(agConfig);
-
     this.n = agConfig.numDecimales;
     this.expresionFuncionObjetivo = this.createObjectiveFunction(
       agConfig.funcion
@@ -45,17 +44,12 @@ class AlgoritmoGenetico {
     this.Lind = this.calculateLindValue();
     this.poblacion = this.generarPoblacionInicial();
 
-    console.log('poblacion Inicial', ...this.poblacion);
-
     if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
       this.normalizarPoblacion();
     }
-
-    console.log('poblacion Normalizada', ...this.poblacion);
-
   }
 
-  normalizarPoblacion() : void {
+  private normalizarPoblacion(): void {
     // Encontrar el menor fitness de la población
     const minFitness = Math.min(
       ...this.poblacion.map((individuo) => individuo.fitness)
@@ -84,14 +78,14 @@ class AlgoritmoGenetico {
     }
   }
 
-  seDebeNormalizar(): boolean {
+  private seDebeNormalizar(): boolean {
     const minFitness = Math.min(
       ...this.poblacion.map((individuo) => individuo.fitness)
     );
     return minFitness < 0 ? true : false;
   }
 
-  generarPoblacionInicial(): Individuo[] {
+  private generarPoblacionInicial(): Individuo[] {
     const poblacionInicial: Individuo[] = [];
     let fxTotal = 0;
 
@@ -161,23 +155,176 @@ class AlgoritmoGenetico {
     );
   }
 
-  public ejecutar() {
-    console.log('Ejecutando algoritmo genético');
-    console.log('Expresion Funcion Objetivo:', this.expresionFuncionObjetivo);
-    console.log('Tipo de Selección:', this.tipoSeleccion);
-    console.log('Tamaño de Población:', this.tamanoPoblacion);
-    console.log('Tipo de Cruce:', this.tipoCruce);
-    console.log('Tipo de Mutación:', this.tipoMutacion);
-    console.log('Probabilidad de Cruce:', this.probabilidadCruce);
-    console.log('Probabilidad de Mutación:', this.probabilidadMutacion);
-    console.log('Número de Iteraciones:', this.numIteraciones);
-    console.log('Valor Mínimo de X:', this.xmin);
-    console.log('Valor Máximo de X:', this.xmax);
-    console.log('Número de Decimales (n):', this.n);
-    console.log('Convergencia:', this.convergencia);
-    console.log('Elitismo:', this.elitismo);
-    console.log('Valor de Lind:', this.Lind);
+  // Paso Ejecutar
+
+  private ejecutar() {
+    let tablaInicial = this.limitarDecimales();
+    let fitnessInicial = this.calculoFitnessTotal();
+    let mejoresCromosomas = [];
+    for (let i = 0; i < this.numIteraciones; i++) {
+      const nuevaPoblacion = [];
+      let cantidadHijos = this.tamanoPoblacion;
+
+      if (this.elitismo) {
+        const mejorIndividuo = this.poblacion.reduce((mejor, individuo) => {
+          return individuo.fitness > mejor.fitness ? individuo : mejor;
+        });
+        nuevaPoblacion.push(mejorIndividuo);
+        cantidadHijos--;
+      }
+      // Ciclo para llenar la nueva tabla
+      while (cantidadHijos > 0) {
+        const padre1 = this.seleccionarPadre();
+        const padre2 = this.seleccionarPadre();
+        const [hijo1, hijo2] = this.cruzar(padre1, padre2);
+        const hijo1Mutado = this.mutar(hijo1);
+        const hijo2Mutado = this.mutar(hijo2);
+        if (cantidadHijos === 1) {
+          nuevaPoblacion.push(hijo1Mutado);
+          cantidadHijos--;
+          break;
+        }
+        nuevaPoblacion.push(hijo1Mutado);
+        nuevaPoblacion.push(hijo2Mutado);
+        cantidadHijos -= 2;
+      }
+      let mejorCromosoma = this.poblacion.reduce(
+        (mejor, cromosoma) =>
+          cromosoma.fitness > mejor.fitness ? cromosoma : mejor,
+        this.poblacion[0]
+      );
+      mejoresCromosomas.push(mejorCromosoma.fitness);
+      this.actualizarPoblacion(nuevaPoblacion);
+      if (this.convergencia) {
+        if (this.verificarConvergencia()) {
+          console.log(`Convergencia alcanzada en la iteración ${i + 1}`);
+          break;
+        }
+      }
+    }
+    return {
+      tablaInicial: tablaInicial,
+      fitnessInicial: fitnessInicial,
+      tablaFinal: this.limitarDecimales(),
+      fitnessFinal: this.calculoFitnessTotal(),
+      mejoresCromosomas: mejoresCromosomas,
+    };
+  }
+
+  private seleccionarPadre() {
+    let padre = null;
+    switch (this.tipoSeleccion) {
+      case 'ruleta':
+        padre = this.seleccionarPadreRuleta();
+        break;
+      // case 'universal':
+      //   padre = this.seleccionarPadreUniversal();
+      //   break;
+      // case 'torneo':
+      //   padre = this.seleccionarPadreTorneo();
+      //   break;
+      // case 'ranking':
+      //   padre = this.seleccionarPadreRanking();
+      //   break;
+      // case 'restos':
+      //   padre = this.seleccionarPadreRestos();
+      //   break;
+      // case 'estocastico':
+      //   padre = this.seleccionarPadreEstocastico();
+      //   break;
+      default:
+        padre = this.seleccionarPadreRuleta();
+        break;
+    }
+    return padre;
+  }
+
+  private seleccionarPadreRuleta() {
+    const r = Math.random();
+    const padre: IndividuoPadre = {};
+    for (const individuo of this.poblacion) {
+      if (r <= individuo.probabilidadAcumulada) {
+        padre.cromosoma = [...individuo.cromosoma]; // Copiar el cromosoma en lugar de asignarlo directamente
+        break;
+      }
+    }
+    return padre;
+  }
+
+  private cruzar(padre1: Individuo, padre2: Individuo) {
+    // Inicio Seccion de Cruces
+    let hijos;
+    if (Math.random() > this.probabilidadCruce) {
+      return [padre1, padre2];
+    }
+    switch (this.tipoCruce) {
+      case 'unPunto':
+        hijos = this.cruzarUnPunto(padre1, padre2);
+        break;
+      // case 'dosPuntos':
+      //   hijos = this.cruzarDosPuntos(padre1, padre2);
+      //   break;
+      // case 'uniforme':
+      //   hijos = this.cruzarUniforme(padre1, padre2);
+      //   break;
+      // default:
+      //   hijos = this.cruzarUnPunto(padre1, padre2);
+      //   break;
+    }
+    return hijos;
+  }
+
+  private cruzarUnPunto(padre1: IndividuoPadre, padre2: IndividuoPadre) {
+    const puntoCruce = Math.floor(Math.random() * this.Lind);
+    const hijo1: IndividuoPadre = {
+      cromosoma: [],
+    };
+    const hijo2: IndividuoPadre = {
+      cromosoma: [],
+    };
+
+    hijo1.cromosoma = hijo1.cromosoma.concat(
+      padre1.cromosoma.slice(0, puntoCruce)
+    );
+    hijo1.cromosoma = hijo1.cromosoma.concat(
+      padre2.cromosoma.slice(puntoCruce)
+    );
+
+    hijo2.cromosoma = hijo2.cromosoma.concat(
+      padre2.cromosoma.slice(0, puntoCruce)
+    );
+    hijo2.cromosoma = hijo2.cromosoma.concat(
+      padre1.cromosoma.slice(puntoCruce)
+    );
+
+    return [hijo1, hijo2];
+  }
+
+  private calculoFitnessTotal(): number {
+    let fxTotal = 0;
+    for (const individuo of this.poblacion) {
+      fxTotal += individuo['fitness'];
+    }
+    return fxTotal;
+  }
+
+  private limitarDecimales(): Individuo[] {
+    let copiaPoblacion = JSON.parse(JSON.stringify(this.poblacion));
+    for (let i = 0; i < this.tamanoPoblacion; i++) {
+      copiaPoblacion[i].xi = parseFloat(copiaPoblacion[i].xi.toFixed(2));
+      copiaPoblacion[i].fitness = parseFloat(
+        copiaPoblacion[i].fitness.toFixed(2)
+      );
+      copiaPoblacion[i].probabilidad = parseFloat(
+        copiaPoblacion[i].probabilidad.toFixed(2)
+      );
+      copiaPoblacion[i].probabilidadAcumulada = parseFloat(
+        copiaPoblacion[i].probabilidadAcumulada.toFixed(2)
+      );
+    }
+    return copiaPoblacion;
   }
 }
+
 
 export { AlgoritmoGenetico };
