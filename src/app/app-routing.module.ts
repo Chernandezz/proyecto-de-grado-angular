@@ -3,12 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'formulario',
+    path: 'genetico',
     loadChildren: () => import('./gen/gen.module').then((m) => m.GenModule),
   },
   {
     path: '**',
-    redirectTo: 'formulario',
+    redirectTo: 'genetico',
   },
 ];
 

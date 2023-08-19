@@ -29,7 +29,7 @@ export class HomeComponent {
     numIndividuos: [100, Validators.min(1)],
     xMin: [0],
     xMax: [10],
-    tituloEjecucion: ['', Validators.required],
+    tituloEjecucion: ['', Validators.required, Validators.maxLength(15)],
   });
 
   isValidField(field: string): boolean {

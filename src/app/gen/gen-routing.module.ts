@@ -7,12 +7,16 @@ import { GraphicsComponent } from './pages/graphics/graphics.component';
 
 const routes: Routes = [
   {
-    path: '',
+    path: 'formulario',
     component: HomeComponent,
   },
   {
+    path: 'graficas',
+    component: GraphicsComponent,
+  },
+  {
     path: '**',
-    redirectTo: '',
+    redirectTo: 'formulario',
   },
 ];
 
