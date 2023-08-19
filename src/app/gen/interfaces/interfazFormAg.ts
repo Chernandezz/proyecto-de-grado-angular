@@ -1,16 +1,16 @@
-export interface FormularioInicialAlgoritmo {
-  funcion: string;
-  tipoSeleccion: string;
-  tipoCruce: string;
-  tipoMutacion: string;
-  probCruce: number;
-  probMutacion: number;
-  numDecimales: number;
-  elitisimo: boolean;
+export interface AlgorithmOptions {
   convergencia: boolean;
+  elitismo: boolean;
+  funcion: string;
+  numDecimales: number;
   numGeneraciones: number;
   numIndividuos: number;
-  xMin: number;
-  xMax: number;
+  probCruce: number;
+  probMutacion: number;
+  tipoCruce: string;
+  tipoMutacion: string;
+  tipoSeleccion: string;
   tituloEjecucion: string;
+  xMax: number;
+  xMin: number;
 }
