@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneticService } from '../../services/genetic.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'gen-home',
@@ -38,7 +39,8 @@ export class HomeComponent {
 
   constructor(
     private fb: FormBuilder,
-    private geneticService: GeneticService
+    private geneticService: GeneticService,
+    private toastr: ToastrService
   ) {}
 
   onSubmit() {
@@ -46,7 +48,16 @@ export class HomeComponent {
       this.formularioInicialAlgoritmo.markAllAsTouched();
       return;
     }
-
+    this.toastr.success(
+      '',
+      `${this.formularioInicialAlgoritmo.value['tituloEjecucion']} - agregado con exito!`,
+      {
+        timeOut: 3000,
+        progressBar: true,
+        progressAnimation: 'increasing',
+        tapToDismiss: true,
+      }
+    );
     this.geneticService.getFunction(this.formularioInicialAlgoritmo.value);
   }
 }
