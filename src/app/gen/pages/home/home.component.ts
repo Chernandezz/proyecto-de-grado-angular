@@ -28,7 +28,7 @@ export class HomeComponent {
     numIndividuos: [100, Validators.min(1)],
     xMin: [0],
     xMax: [10],
-    tituloEjecucion: ['Ej1', Validators.required],
+    tituloEjecucion: ['', Validators.required],
   });
 
   isValidField(field: string): boolean {
@@ -46,7 +46,7 @@ export class HomeComponent {
       this.formularioInicialAlgoritmo.markAllAsTouched();
       return;
     }
-    this.formularioInicialAlgoritmo.value['funcion'].toLowerCase();
+
     this.geneticService.getFunction(this.formularioInicialAlgoritmo.value);
   }
 }

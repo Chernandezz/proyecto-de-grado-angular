@@ -10,6 +10,7 @@ export class GeneticService {
   getFunction(genOptions: AlgorithmOptions) {
     let res = new AlgoritmoGenetico(genOptions);
 
+
     this.colaAlgoritmos.push(res);
 
 

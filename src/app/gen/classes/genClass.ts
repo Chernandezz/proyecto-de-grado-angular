@@ -20,6 +20,7 @@ class AlgoritmoGenetico {
   private elitismo!: boolean;
   private poblacion!: Individuo[];
   private resultado!: ResultadoAlgoritmo;
+  private tituloEjecucion!: string;
 
   constructor(agConfig: AlgorithmOptions) {
     // console.log(agConfig);
@@ -46,6 +47,7 @@ class AlgoritmoGenetico {
     this.elitismo = agConfig.elitismo;
     this.Lind = this.calculateLindValue();
     this.poblacion = this.generarPoblacionInicial();
+    this.tituloEjecucion = agConfig.tituloEjecucion;
 
     if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
       this.normalizarPoblacion();
