@@ -1,4 +1,4 @@
-No entiendo porque la validacion del formulario no esta funcionando se supone que
+ºNo entiendo porque la validacion del formulario no esta funcionando se supone que
 false -> todo correcto
 true -> hay error en la validacion
 y me esta dando false
