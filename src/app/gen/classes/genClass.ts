@@ -1,7 +1,7 @@
 import * as math from 'mathjs';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { Individuo } from '../interfaces/Individuo';
-import { IndividuoPadre } from '../interfaces/IndividuoPadre';
+import { ResultadoAlgoritmo } from '../interfaces/Resultado';
 
 class AlgoritmoGenetico {
   private expresionFuncionObjetivo!: (params: any) => number;
@@ -18,11 +18,14 @@ class AlgoritmoGenetico {
   private convergencia!: boolean;
   private Lind!: number;
   private elitismo!: boolean;
-  private poblacion!: any[];
+  private poblacion!: Individuo[];
+  private resultado!: ResultadoAlgoritmo;
 
   constructor(agConfig: AlgorithmOptions) {
+    // console.log(agConfig);
+
     this.initializeConfiguration(agConfig);
-    this.ejecutar();
+    this.resultado = this.ejecutar();
   }
 
   private initializeConfiguration(agConfig: AlgorithmOptions) {
@@ -97,6 +100,7 @@ class AlgoritmoGenetico {
         fitness: 0,
         probabilidadAcumulada: 0,
         probabilidad: 0,
+        fx: 0,
       };
 
       const cromosoma = [];
@@ -157,7 +161,7 @@ class AlgoritmoGenetico {
 
   // Paso Ejecutar
 
-  private ejecutar() {
+  private ejecutar(): ResultadoAlgoritmo {
     let tablaInicial = this.limitarDecimales();
     let fitnessInicial = this.calculoFitnessTotal();
     let mejoresCromosomas = [];
@@ -177,8 +181,8 @@ class AlgoritmoGenetico {
         const padre1 = this.seleccionarPadre();
         const padre2 = this.seleccionarPadre();
         const [hijo1, hijo2] = this.cruzar(padre1, padre2);
-        const hijo1Mutado = this.mutar(hijo1);
-        const hijo2Mutado = this.mutar(hijo2);
+        const hijo1Mutado: Individuo = this.mutar(hijo1);
+        const hijo2Mutado: Individuo = this.mutar(hijo2);
         if (cantidadHijos === 1) {
           nuevaPoblacion.push(hijo1Mutado);
           cantidadHijos--;
@@ -202,13 +206,84 @@ class AlgoritmoGenetico {
         }
       }
     }
-    return {
+    const resultado: ResultadoAlgoritmo = {
       tablaInicial: tablaInicial,
       fitnessInicial: fitnessInicial,
       tablaFinal: this.limitarDecimales(),
       fitnessFinal: this.calculoFitnessTotal(),
       mejoresCromosomas: mejoresCromosomas,
     };
+
+    return resultado;
+  }
+
+  private verificarConvergencia(): boolean {
+    const fitnessInicial = this.poblacion[0].fitness;
+    for (let i = 1; i < this.tamanoPoblacion; i++) {
+      if (this.poblacion[i].fitness !== fitnessInicial) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private actualizarPoblacion(nuevaPoblacion: Individuo[]) {
+    let fxTotal = 0;
+
+    for (const individuo of nuevaPoblacion) {
+      individuo['binario'] = individuo.cromosoma.join('');
+
+      const xi =
+        this.xmin +
+        (parseInt(individuo['binario'], 2) * (this.xmax - this.xmin)) /
+          (Math.pow(2, this.Lind) - 1);
+      individuo['xi'] = xi;
+      // Calcular el valor de fitness usando los valores de xi
+      individuo['fitness'] = this.expresionFuncionObjetivo({ x: xi });
+
+      fxTotal += individuo['fitness'];
+    }
+
+    let probabilidadAcumulada = 0;
+    // Calcular la probabilidad de cada individuo
+    for (let i = 0; i < this.tamanoPoblacion; i++) {
+      nuevaPoblacion[i]['probabilidad'] =
+        nuevaPoblacion[i]['fitness'] / fxTotal;
+      // Calcular la probabilidad acumulada de cada individuo
+      nuevaPoblacion[i]['probabilidadAcumulada'] =
+        probabilidadAcumulada + nuevaPoblacion[i]['probabilidad'];
+      probabilidadAcumulada = nuevaPoblacion[i]['probabilidadAcumulada'];
+    }
+    this.poblacion = [...nuevaPoblacion];
+  }
+
+  private mutar(individuo: Individuo) {
+    switch (this.tipoMutacion) {
+      case 'bit-flip':
+        individuo = this.mutarBitflip(individuo);
+        break;
+      // case 'intercambio':
+      //   individuo = this.mutarIntercambio(individuo);
+      //   break;
+      // default:
+      //   individuo = this.mutarBitflip(individuo);
+      //   break;
+    }
+    return individuo;
+  }
+
+  private mutarBitflip(individuo: Individuo) {
+    // Método de mutación bit-flip
+    // Crear una copia del objeto individuo antes de modificarlo
+    const individuoMutado = JSON.parse(JSON.stringify(individuo));
+
+    for (let i = 0; i < this.Lind; i++) {
+      if (Math.random() < this.probabilidadMutacion) {
+        individuoMutado.cromosoma[i] =
+          individuoMutado.cromosoma[i] === 0 ? 1 : 0;
+      }
+    }
+    return individuoMutado;
   }
 
   private seleccionarPadre() {
@@ -241,7 +316,15 @@ class AlgoritmoGenetico {
 
   private seleccionarPadreRuleta() {
     const r = Math.random();
-    const padre: IndividuoPadre = {};
+    const padre: Individuo = {
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+      cromosoma: [],
+      binario: '',
+      xi: 0,
+      fitness: 0,
+      fx: 0,
+    };
     for (const individuo of this.poblacion) {
       if (r <= individuo.probabilidadAcumulada) {
         padre.cromosoma = [...individuo.cromosoma]; // Copiar el cromosoma en lugar de asignarlo directamente
@@ -251,14 +334,14 @@ class AlgoritmoGenetico {
     return padre;
   }
 
-  private cruzar(padre1: Individuo, padre2: Individuo) {
+  private cruzar(padre1: Individuo, padre2: Individuo): Individuo[] {
     // Inicio Seccion de Cruces
-    let hijos;
+    let hijos: Individuo[] = [];
     if (Math.random() > this.probabilidadCruce) {
       return [padre1, padre2];
     }
     switch (this.tipoCruce) {
-      case 'unPunto':
+      case 'un-punto':
         hijos = this.cruzarUnPunto(padre1, padre2);
         break;
       // case 'dosPuntos':
@@ -274,13 +357,25 @@ class AlgoritmoGenetico {
     return hijos;
   }
 
-  private cruzarUnPunto(padre1: IndividuoPadre, padre2: IndividuoPadre) {
+  private cruzarUnPunto(padre1: Individuo, padre2: Individuo) {
     const puntoCruce = Math.floor(Math.random() * this.Lind);
-    const hijo1: IndividuoPadre = {
+    const hijo1: Individuo = {
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
       cromosoma: [],
+      binario: '',
+      xi: 0,
+      fitness: 0,
+      fx: 0,
     };
-    const hijo2: IndividuoPadre = {
+    const hijo2: Individuo = {
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
       cromosoma: [],
+      binario: '',
+      xi: 0,
+      fitness: 0,
+      fx: 0,
     };
 
     hijo1.cromosoma = hijo1.cromosoma.concat(
@@ -322,9 +417,9 @@ class AlgoritmoGenetico {
         copiaPoblacion[i].probabilidadAcumulada.toFixed(2)
       );
     }
+
     return copiaPoblacion;
   }
 }
-
 
 export { AlgoritmoGenetico };

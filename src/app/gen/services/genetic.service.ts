@@ -4,12 +4,16 @@ import { AlgoritmoGenetico } from '../classes/genClass';
 
 @Injectable({providedIn: 'root'})
 export class GeneticService {
+  private colaAlgoritmos : AlgoritmoGenetico[] = [];
   constructor() { }
 
   getFunction(genOptions: AlgorithmOptions) {
-    console.log('aqui estoy');
+    let res = new AlgoritmoGenetico(genOptions);
 
-    let est = new AlgoritmoGenetico(genOptions);
+    this.colaAlgoritmos.push(res);
+
+
+    console.log(this.colaAlgoritmos);
 
   }
 

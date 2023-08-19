@@ -5,4 +5,5 @@ export interface Individuo {
   binario: string;
   xi: number;
   fitness: number;
+  fx: number;
 }
