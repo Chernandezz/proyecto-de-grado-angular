@@ -45,7 +45,50 @@ class AlgoritmoGenetico {
     this.Lind = this.calculateLindValue();
     this.poblacion = this.generarPoblacionInicial();
 
-    console.log(this.poblacion);
+    console.log('poblacion Inicial', ...this.poblacion);
+
+    if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
+      this.normalizarPoblacion();
+    }
+
+    console.log('poblacion Normalizada', ...this.poblacion);
+
+  }
+
+  normalizarPoblacion() : void {
+    // Encontrar el menor fitness de la población
+    const minFitness = Math.min(
+      ...this.poblacion.map((individuo) => individuo.fitness)
+    );
+
+    // Calcular el valor de fx para cada individuo
+    this.poblacion = this.poblacion.map((individuo) => {
+      individuo.fx = individuo.fitness - minFitness * 2;
+      return individuo;
+    });
+
+    // Calcular la suma de los fx
+    const fxTotal = this.poblacion.reduce(
+      (total, individuo) => total + individuo.fx,
+      0
+    );
+
+    let probabilidadAcumulada = 0;
+    // Calcular la probabilidad de cada individuo
+    for (let i = 0; i < this.tamanoPoblacion; i++) {
+      this.poblacion[i]['probabilidad'] = this.poblacion[i]['fx'] / fxTotal;
+      // Calcular la probabilidad acumulada de cada individuo
+      this.poblacion[i]['probabilidadAcumulada'] =
+        probabilidadAcumulada + this.poblacion[i]['probabilidad'];
+      probabilidadAcumulada = this.poblacion[i]['probabilidadAcumulada'];
+    }
+  }
+
+  seDebeNormalizar(): boolean {
+    const minFitness = Math.min(
+      ...this.poblacion.map((individuo) => individuo.fitness)
+    );
+    return minFitness < 0 ? true : false;
   }
 
   generarPoblacionInicial(): Individuo[] {
