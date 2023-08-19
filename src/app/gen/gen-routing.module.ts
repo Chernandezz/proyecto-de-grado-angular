@@ -11,7 +11,7 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'graficas',
+    path: 'resultados',
     component: GraphicsComponent,
   },
   {
