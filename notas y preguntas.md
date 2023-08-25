@@ -29,3 +29,6 @@ TO DO:
 * Si seria bueno implementar varias rutas para tenerlo mas organizado
 * formulario que no sea la ruta raiz, que sea 'formulario'
 * cambiar de snake case a cammel
+
+- Intente bastante con ngx-chart pero siempre salian error
+- Implemente apex charts

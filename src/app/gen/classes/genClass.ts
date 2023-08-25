@@ -4,23 +4,23 @@ import { Individuo } from '../interfaces/Individuo';
 import { ResultadoAlgoritmo } from '../interfaces/Resultado';
 
 class AlgoritmoGenetico {
-  private expresionFuncionObjetivo!: (params: any) => number;
-  private tipoSeleccion!: string;
-  private tamanoPoblacion!: number;
-  private tipoCruce!: string;
-  private tipoMutacion!: string;
-  private probabilidadCruce!: number;
-  private probabilidadMutacion!: number;
-  private numIteraciones!: number;
-  private xmin!: number;
-  private xmax!: number;
-  private n!: number;
-  private convergencia!: boolean;
-  private Lind!: number;
-  private elitismo!: boolean;
-  private poblacion!: Individuo[];
-  private resultado!: ResultadoAlgoritmo;
-  private tituloEjecucion!: string;
+  public expresionFuncionObjetivo!: (params: any) => number;
+  public tipoSeleccion!: string;
+  public tamanoPoblacion!: number;
+  public tipoCruce!: string;
+  public tipoMutacion!: string;
+  public probabilidadCruce!: number;
+  public probabilidadMutacion!: number;
+  public numIteraciones!: number;
+  public xmin!: number;
+  public xmax!: number;
+  public n!: number;
+  public convergencia!: boolean;
+  public Lind!: number;
+  public elitismo!: boolean;
+  public poblacion!: Individuo[];
+  public resultado!: ResultadoAlgoritmo;
+  public tituloEjecucion!: string;
 
   constructor(agConfig: AlgorithmOptions) {
     // console.log(agConfig);
