@@ -14,6 +14,17 @@ export class GeneticService {
     return this.colaAlgoritmosSubject.asObservable();
   }
 
+  get getColaAlgoritmos() {
+    return [...this.colaAlgoritmos];
+  }
+
+  eliminarAlgoritmo(nombre: string) {
+    this.colaAlgoritmos = this.colaAlgoritmos.filter(
+      (algo) => algo.tituloEjecucion !== nombre
+    );
+    this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
+  }
+
   getFunction(genOptions: AlgorithmOptions) {
     let res = new AlgoritmoGenetico(genOptions);
 

@@ -25,8 +25,8 @@ export class HomeComponent {
     numDecimales: [2, Validators.min(0)],
     elitismo: false,
     convergencia: false,
-    numGeneraciones: [1000, Validators.min(1)],
-    numIndividuos: [100, Validators.min(1)],
+    numGeneraciones: [1000, [Validators.required, Validators.min(5)]],
+    numIndividuos: [100, [Validators.required, Validators.min(5)]],
     xMin: [0],
     xMax: [10],
     tituloEjecucion: ['', [Validators.required, Validators.maxLength(15)]],
@@ -44,6 +44,7 @@ export class HomeComponent {
   ) {}
 
   onSubmit() {
+    this.verificarNombreEjecucion();
     if (this.formularioInicialAlgoritmo.invalid) {
       this.formularioInicialAlgoritmo.markAllAsTouched();
       return;
@@ -59,5 +60,27 @@ export class HomeComponent {
       }
     );
     this.geneticService.getFunction(this.formularioInicialAlgoritmo.value);
+  }
+
+  verificarNombreEjecucion() {
+    let nombre = this.formularioInicialAlgoritmo.value['tituloEjecucion'];
+    this.geneticService.getColaAlgoritmos.forEach((algo) => {
+      if (algo.tituloEjecucion === nombre) {
+        this.formularioInicialAlgoritmo.controls['tituloEjecucion'].setErrors({
+          repetido: true,
+        });
+        this.toastr.error(
+          '',
+          `${this.formularioInicialAlgoritmo.value['tituloEjecucion']} - Ya existe!`,
+          {
+            timeOut: 3000,
+            progressBar: true,
+            progressAnimation: 'increasing',
+            tapToDismiss: true,
+          }
+        );
+      }
+    });
+    
   }
 }

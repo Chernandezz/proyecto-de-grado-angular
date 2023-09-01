@@ -5,8 +5,8 @@
 
   <div class="flex-fill mt-4" id="formularioInicial">
       <h1 class="text-center">Algoritmo Genético</h1>
-      <div class="row justify-content-center">
-        <form id="formulario" class="col-lg-6 col-md-12" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
+      <div class="d-flex justify-content-center">
+        <form id="formulario" class="col-lg-8 col-md-12" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col-lg-6">
               <label class="form-label">Función objetivo:</label>
@@ -88,6 +88,9 @@
               <div class="mb-3">
                 <label class="form-label">Tam. de la población:</label>
                 <input type="number" class="form-control" value="7" formControlName="numIndividuos">
+                <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
+                  ¡Debe ser mayor a 5!
+                </span>
               </div>
     
               <div class="mb-3">

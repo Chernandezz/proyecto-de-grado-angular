@@ -18,6 +18,10 @@ export class SideBarComponent implements OnDestroy {
     });
   }
 
+  eliminarAlgoritmo(nombre: string){
+    this.gen.eliminarAlgoritmo(nombre);
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
