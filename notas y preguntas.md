@@ -18,7 +18,7 @@ Opcionales:
 
 TO DO:
 
-- Esta bien hacer un formulario reactivo?
+
 - Que cuando se agrege un algoritmo a la cola, quede igual el formulario pero salga una alerta, de formulario agregado con exito
 - Una lista donde aparezca la lista de algoritmos agregados a la cola y que se vean por el nombre, y tenga la opcion de borrar si desea
 - Historial de ejecuciones
