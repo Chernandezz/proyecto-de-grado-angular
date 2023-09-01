@@ -1,12 +1,9 @@
-<div class="d-flex">
-  <div>
-    <gen-side-bar></gen-side-bar>
-  </div>
-
-  <div class="flex-fill mt-4" id="formularioInicial">
+<div class="row m-0">
+  <gen-side-bar class="col m-0 p-0"></gen-side-bar>
+  <div class="mt-4 col-md-10 mx-auto col-lg-8" id="formularioInicial">
       <h1 class="text-center">Algoritmo Genético</h1>
       <div class="d-flex justify-content-center">
-        <form id="formulario" class="col-lg-8 col-md-12" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
+        <form id="formulario" class="w-75" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
           <div class="row">
             <div class="col-lg-6">
               <label class="form-label">Función objetivo:</label>
@@ -121,5 +118,6 @@
         </form>
       </div>
   </div>
+  
 </div>
 
