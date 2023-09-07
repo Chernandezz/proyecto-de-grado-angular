@@ -25,14 +25,34 @@ export class GeneticService {
     this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
   }
 
+  
+
   getFunction(genOptions: AlgorithmOptions) {
-    let res = new AlgoritmoGenetico(genOptions);
+    const newVariables = Object.assign({}, genOptions);
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      const worker = new Worker(new URL('./worker-ag.worker', import.meta.url));
+      worker.postMessage(newVariables);
+      worker.onmessage = (res) => {
+        this.colaAlgoritmos.push(res.data.resultado);
+        this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
+      };
+      
+    } else {
+      // Web workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+    }
+    
+        
 
-    console.log(res.resultado);
+    
 
-    this.colaAlgoritmos.push(res);
-    this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
+    // let res = new AlgoritmoGenetico(genOptions);
 
-    console.log(this.colaAlgoritmos);
+    // console.log(res.resultado);
+
+    
+
+    // console.log(this.colaAlgoritmos);
   }
 }
