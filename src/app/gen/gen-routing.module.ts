@@ -10,10 +10,10 @@ const routes: Routes = [
     path: 'formulario',
     component: HomeComponent,
   },
-  // {
-  //   path: 'resultados',
-  //   component: GraphicsComponent,
-  // },
+  {
+    path: 'resultados',
+    component: GraphicsComponent,
+  },
   {
     path: '**',
     redirectTo: 'formulario',

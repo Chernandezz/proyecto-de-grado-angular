@@ -1,20 +1,27 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { AlgoritmoGenetico } from '../classes/genClass';
-import { BehaviorSubject } from 'rxjs';
-import { listaTerminados } from '../interfaces/listaTerminados';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {
   private colaAlgoritmos: AlgoritmoGenetico[] = [];
   private colaAlgoritmosSubject = new BehaviorSubject<AlgoritmoGenetico[]>([]);
-  private listaTerminados: listaTerminados[] = []
+  private listaTerminadosSubject = new BehaviorSubject<
+    { tituloEjecucion: string; terminado: boolean }[]
+  >([]);
+
 
   constructor() {}
 
   get getColaAlgoritmos$() {
     return this.colaAlgoritmosSubject.asObservable();
   }
+
+  get getListaTerminados$() {
+    return this.listaTerminadosSubject.asObservable();
+  }
+
 
   get getColaAlgoritmos() {
     return [...this.colaAlgoritmos];
@@ -24,38 +31,52 @@ export class GeneticService {
     this.colaAlgoritmos = this.colaAlgoritmos.filter(
       (algo) => algo.tituloEjecucion !== nombre
     );
+    this.actualizarColaAlgoritmos();
+  }
+
+  private actualizarColaAlgoritmos() {
     this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
   }
 
-  
+  private marcarComoTerminado(tituloEjecucion: string) {
+    const algoritmoTerminado = this.listaTerminadosSubject.value.find(
+      (algo) => algo.tituloEjecucion === tituloEjecucion
+    );
+    if (algoritmoTerminado) {
+      algoritmoTerminado.terminado = true;
+      this.listaTerminadosSubject.next([...this.listaTerminadosSubject.value]);
+    }
+  }
 
   getFunction(genOptions: AlgorithmOptions) {
-    const newVariables = Object.assign({}, genOptions);
+    const newVariables = { ...genOptions };
     const tempLoader = {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
-    }
-    this.listaTerminados.push(tempLoader);
-    
-    console.log(this.listaTerminados);
+    };
+    this.listaTerminadosSubject.next([
+      ...this.listaTerminadosSubject.value,
+      tempLoader,
+    ]);
+
     if (typeof Worker !== 'undefined') {
-      // Create a new
-      const worker = new Worker(new URL('./worker-ag.worker', import.meta.url));
-      worker.postMessage(newVariables);
-      worker.onmessage = (res) => {
-        this.colaAlgoritmos.push(res.data.resultado);
-        // Funcion para cambiar el estado de terminado
-        this.listaTerminados.forEach((algo) => {
-          if (algo.tituloEjecucion === res.data.resultado.tituloEjecucion) {
-            algo.terminado = true;
-          }
-        });
-        this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
-      };
-      
+      try {
+        const worker = new Worker(
+          new URL('./worker-ag.worker', import.meta.url)
+        );
+        worker.postMessage(newVariables);
+        worker.onmessage = (res) => {
+          this.colaAlgoritmos.push(res.data.resultado);
+          this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
+          this.actualizarColaAlgoritmos();
+        };
+      } catch (error) {
+        console.error('Error al crear el Web Worker:', error);
+        // Manejo de errores: puedes agregar un mensaje de error o tomar medidas adicionales si es necesario
+      }
     } else {
-      // Web workers are not supported in this environment.
-      // You should add a fallback so that your program still executes correctly.
+      console.warn('Web workers are not supported in this environment.');
+      // Puedes agregar una notificación o un comportamiento alternativo aquí si los Web Workers no son compatibles
     }
   }
 }
