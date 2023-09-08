@@ -64,7 +64,7 @@ export class AGFormComponent {
 
   verificarNombreEjecucion() {
     let nombre = this.formularioInicialAlgoritmo.value['tituloEjecucion'];
-    this.geneticService.getColaAlgoritmos.forEach((algo) => {
+    this.geneticService.getListaTerminados.forEach((algo) => {
       if (algo.tituloEjecucion === nombre) {
         this.formularioInicialAlgoritmo.controls['tituloEjecucion'].setErrors({
           repetido: true,

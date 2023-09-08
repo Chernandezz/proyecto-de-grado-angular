@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { AlgoritmoGenetico } from '../classes/genClass';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {
@@ -10,7 +10,8 @@ export class GeneticService {
   private listaTerminadosSubject = new BehaviorSubject<
     { tituloEjecucion: string; terminado: boolean }[]
   >([]);
-
+  private listaTerminados: { tituloEjecucion: string; terminado: boolean }[] =
+    [];
 
   constructor() {}
 
@@ -22,6 +23,9 @@ export class GeneticService {
     return this.listaTerminadosSubject.asObservable();
   }
 
+  get getListaTerminados() {
+    return [...this.listaTerminados];
+  }
 
   get getColaAlgoritmos() {
     return [...this.colaAlgoritmos];
@@ -31,20 +35,28 @@ export class GeneticService {
     this.colaAlgoritmos = this.colaAlgoritmos.filter(
       (algo) => algo.tituloEjecucion !== nombre
     );
+    this.listaTerminados = this.listaTerminados.filter(
+      (algo) => algo.tituloEjecucion !== nombre
+    );
     this.actualizarColaAlgoritmos();
+    this.actualizarListaTerminados();
   }
 
   private actualizarColaAlgoritmos() {
     this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
   }
 
+  private actualizarListaTerminados() {
+    this.listaTerminadosSubject.next([...this.listaTerminados]);
+  }
+
   private marcarComoTerminado(tituloEjecucion: string) {
-    const algoritmoTerminado = this.listaTerminadosSubject.value.find(
+    const algoritmoTerminado = this.listaTerminados.find(
       (algo) => algo.tituloEjecucion === tituloEjecucion
     );
     if (algoritmoTerminado) {
       algoritmoTerminado.terminado = true;
-      this.listaTerminadosSubject.next([...this.listaTerminadosSubject.value]);
+      this.actualizarListaTerminados();
     }
   }
 
@@ -54,10 +66,8 @@ export class GeneticService {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
     };
-    this.listaTerminadosSubject.next([
-      ...this.listaTerminadosSubject.value,
-      tempLoader,
-    ]);
+    this.listaTerminados.push(tempLoader);
+    this.actualizarListaTerminados();
 
     if (typeof Worker !== 'undefined') {
       try {
