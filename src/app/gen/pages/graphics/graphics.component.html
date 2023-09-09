@@ -1,3 +1,6 @@
 <div class="">
-  <lista-terminados class="col m-5"></lista-terminados>
+  <!-- Mostrar lista-terminados si no se deben mostrar resultados -->
+  <lista-terminados *ngIf="!mostrarResultados" class="col m-5"></lista-terminados>
+  <!-- Mostrar gen-resultados si se deben mostrar resultados -->
+  <gen-resultados *ngIf="mostrarResultados" class="col m-5"></gen-resultados>
 </div>

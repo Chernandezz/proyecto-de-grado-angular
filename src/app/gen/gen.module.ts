@@ -9,9 +9,10 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { SideBarComponent } from './components/side-bar/side-bar.component';
 import { AGFormComponent } from './components/agform/agform.component';
 import { ListaTerminadosComponent } from './components/lista-terminados/lista-terminados.component';
+import { ResultadosComponent } from './components/resultados/resultados.component';
 
 @NgModule({
-  declarations: [HomeComponent, SideBarComponent, AGFormComponent, ListaTerminadosComponent, GraphicsComponent],
+  declarations: [HomeComponent, SideBarComponent, AGFormComponent, ListaTerminadosComponent, GraphicsComponent, ResultadosComponent],
   imports: [
     CommonModule,
     GenRoutingModule,

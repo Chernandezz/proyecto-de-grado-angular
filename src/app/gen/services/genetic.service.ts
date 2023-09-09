@@ -12,11 +12,16 @@ export class GeneticService {
   >([]);
   private listaTerminados: { tituloEjecucion: string; terminado: boolean }[] =
     [];
+  private mostrarResultadosServiceSubject = new BehaviorSubject<boolean>(false);
 
   constructor() {}
 
   get getColaAlgoritmos$() {
     return this.colaAlgoritmosSubject.asObservable();
+  }
+
+  get getMostrarResultadosService$() {
+    return this.mostrarResultadosServiceSubject.asObservable();
   }
 
   get getListaTerminados$() {
@@ -46,6 +51,16 @@ export class GeneticService {
     this.colaAlgoritmosSubject.next([...this.colaAlgoritmos]);
   }
 
+  private checkMostrarResultados() {
+    const todosTerminados = this.listaTerminados.every(
+      (algo) => algo.terminado === true
+    );
+    if (todosTerminados) {
+      // Cuando todos los algoritmos estén terminados, mostrar los resultados
+      this.mostrarResultadosServiceSubject.next(true);
+    }
+  }
+
   private actualizarListaTerminados() {
     this.listaTerminadosSubject.next([...this.listaTerminados]);
   }
@@ -57,6 +72,7 @@ export class GeneticService {
     if (algoritmoTerminado) {
       algoritmoTerminado.terminado = true;
       this.actualizarListaTerminados();
+      this.checkMostrarResultados();
     }
   }
 
@@ -77,6 +93,8 @@ export class GeneticService {
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
           this.colaAlgoritmos.push(res.data.resultado);
+          console.log(this.colaAlgoritmos);
+
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();
         };
