@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { GeneticService } from '../../services/genetic.service';
 import { Subscription } from 'rxjs';
-import { AlgoritmoGenetico } from '../../classes/genClass';
+import { AlgoritmoGenetico } from '../../services/genClass';
 
 @Component({
   selector: 'gen-side-bar',
@@ -9,20 +9,20 @@ import { AlgoritmoGenetico } from '../../classes/genClass';
   styleUrls: ['./side-bar.component.css'],
 })
 export class SideBarComponent implements OnDestroy {
-  colaAlgoritmos: AlgoritmoGenetico[] = [];
+  public listaTerminados: { tituloEjecucion: string; terminado: boolean }[] =
+    [];
   private subscription: Subscription;
-
   constructor(private gen: GeneticService) {
-    this.subscription = this.gen.getColaAlgoritmos$.subscribe((cola) => {
-      this.colaAlgoritmos = cola;
+    this.subscription = this.gen.getListaTerminados$.subscribe((cola) => {
+      this.listaTerminados = cola;
     });
   }
-
-  eliminarAlgoritmo(nombre: string){
-    this.gen.eliminarAlgoritmo(nombre);
-  }
-
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+
+  eliminarAlgoritmo(nombre: string) {
+    this.gen.eliminarAlgoritmo(nombre);
+  }
+
 }

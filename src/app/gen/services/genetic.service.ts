@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
-import { AlgoritmoGenetico } from '../classes/genClass';
+import { AlgoritmoGenetico } from './genClass';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
