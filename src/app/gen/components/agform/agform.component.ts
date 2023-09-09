@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneticService } from '../../services/genetic.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'gen-agform',
@@ -40,8 +41,26 @@ export class AGFormComponent {
   constructor(
     private fb: FormBuilder,
     private geneticService: GeneticService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
+
+  irAResultados(){
+    if(this.geneticService.getListaTerminados.length === 0){
+      this.toastr.error(
+        '',
+        `Agregue algoritmos a la cola`,
+        {
+          timeOut: 3000,
+          progressBar: true,
+          progressAnimation: 'increasing',
+          tapToDismiss: true,
+        }
+      );
+      return;
+    }
+    this.router.navigate(['/genetico/resultados']);
+  }
 
   onSubmit() {
     this.verificarNombreEjecucion();
