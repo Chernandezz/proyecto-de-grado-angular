@@ -1,10 +1,10 @@
 import * as math from 'mathjs';
-import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { Individuo } from '../interfaces/Individuo';
 import { ResultadoAlgoritmo } from '../interfaces/Resultado';
+import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 
 class AlgoritmoGenetico {
-  public expresionFuncionObjetivo!: (params: any) => number;
+  public expresionFuncionObjetivo?: (params: any) => number;
   public tipoSeleccion!: string;
   public tamanoPoblacion!: number;
   public tipoCruce!: string;
@@ -113,16 +113,21 @@ class AlgoritmoGenetico {
       individuo.binario = cromosoma.join('');
 
       // Calcular los valores de xi
-
       const xi =
         this.xmin +
         (parseInt(individuo.binario, 2) * (this.xmax - this.xmin)) /
           (Math.pow(2, this.Lind) - 1);
       individuo.xi = xi;
-      // Calcular el valor de fitness usando los valores de xi
-      individuo.fitness = this.expresionFuncionObjetivo({ x: xi });
 
-      fxTotal += individuo.fitness;
+      // Verificar si la propiedad expresionFuncionObjetivo está definida
+      if (this.expresionFuncionObjetivo) {
+        // Calcular el valor de fitness usando los valores de xi
+        individuo.fitness = this.expresionFuncionObjetivo({ x: xi });
+        fxTotal += individuo.fitness;
+      } else {
+        // En caso de que expresionFuncionObjetivo no esté definida, establece fitness en 0 o algún otro valor predeterminado
+        individuo.fitness = 0; // Puedes ajustar esto según tus necesidades
+      }
 
       poblacionInicial.push(individuo);
     }
@@ -241,7 +246,14 @@ class AlgoritmoGenetico {
           (Math.pow(2, this.Lind) - 1);
       individuo['xi'] = xi;
       // Calcular el valor de fitness usando los valores de xi
-      individuo['fitness'] = this.expresionFuncionObjetivo({ x: xi });
+      // Verificar si la propiedad expresionFuncionObjetivo está definida
+      if (this.expresionFuncionObjetivo) {
+        // Calcular el valor de fitness usando los valores de xi
+        individuo['fitness'] = this.expresionFuncionObjetivo({ x: xi });
+      } else {
+        // En caso de que expresionFuncionObjetivo no esté definida, establece fitness en 0 o algún otro valor predeterminado
+        individuo.fitness = 0; // Puedes ajustar esto según tus necesidades
+      }
 
       fxTotal += individuo['fitness'];
     }
