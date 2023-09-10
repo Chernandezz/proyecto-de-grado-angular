@@ -58,6 +58,8 @@ export class GeneticService {
     if (todosTerminados) {
       // Cuando todos los algoritmos estén terminados, mostrar los resultados
       this.mostrarResultadosServiceSubject.next(true);
+    }else{
+      this.mostrarResultadosServiceSubject.next(false);
     }
   }
 
@@ -72,7 +74,6 @@ export class GeneticService {
     if (algoritmoTerminado) {
       algoritmoTerminado.terminado = true;
       this.actualizarListaTerminados();
-      this.checkMostrarResultados();
     }
   }
 
@@ -82,8 +83,10 @@ export class GeneticService {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
     };
+    
     this.listaTerminados.push(tempLoader);
     this.actualizarListaTerminados();
+    this.checkMostrarResultados();
 
     if (typeof Worker !== 'undefined') {
       try {
@@ -93,10 +96,9 @@ export class GeneticService {
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
           this.colaAlgoritmos.push(res.data.resultado);
-          console.log(this.colaAlgoritmos);
-
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();
+          this.checkMostrarResultados();
         };
       } catch (error) {
         console.error('Error al crear el Web Worker:', error);
