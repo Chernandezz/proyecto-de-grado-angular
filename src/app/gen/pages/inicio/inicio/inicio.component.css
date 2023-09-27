@@ -1,0 +1,29 @@
+/* Personaliza los estilos CSS aquí */
+.container {
+  margin-top: 100px;
+}
+
+.card {
+  background-color: #fff;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.card-title {
+  color: #333;
+  font-size: 2rem;
+}
+
+.btn-custom {
+  background-color: #ff6b6b;
+  color: #fff;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #ff4747;
+}

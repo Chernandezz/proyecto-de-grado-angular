@@ -1,0 +1,31 @@
+<div class="container-fluid bg-dark d-flex align-items-center justify-content-center vh-100">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="card p-4 text-center">
+        <h1 class="display-4 text-primary mb-4">Algoritmo Genético</h1>
+        <p class="lead mb-4">Seleccione qué tipo de algoritmo genético desea ejecutar.</p>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Ejecutar Función</h5>
+                <p class="card-text">Elija esta opción para ejecutar un algoritmo genético en funciones matemáticas.</p>
+                <a [routerLink]="['./formulario']" class="btn btn-primary">Iniciar</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Ejecutar Asignación</h5>
+                <p class="card-text">Opte por esta opción para ejecutar un algoritmo genético en problemas de
+                  asignación.</p>
+                <a  class="btn btn-primary">Iniciar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

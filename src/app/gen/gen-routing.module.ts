@@ -1,22 +1,25 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
+import { agFuncionComponent } from './pages/ag-funcion/ag-funcion.component';
 import { GraphicsComponent } from './pages/graphics/graphics.component';
-
-
+import { InicioComponent } from './pages/inicio/inicio/inicio.component';
 
 const routes: Routes = [
   {
     path: 'formulario',
-    component: HomeComponent,
+    component: agFuncionComponent,
   },
   {
     path: 'resultados',
     component: GraphicsComponent,
   },
   {
+    path: '',
+    component: InicioComponent,
+  },
+  {
     path: '**',
-    redirectTo: 'formulario',
+    redirectTo: '',
   },
 ];
 
