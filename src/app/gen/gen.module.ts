@@ -11,16 +11,20 @@ import { AGFormComponent } from './components/agform/agform.component';
 import { ListaTerminadosComponent } from './components/lista-terminados/lista-terminados.component';
 import { ResultadosComponent } from './components/resultados/resultados.component';
 import { InicioComponent } from './pages/inicio/inicio/inicio.component';
+import { FormularioAsignacionComponent } from './components/formulario-asignacion/formulario-asignacion.component';
+import { agAsignacionComponent } from './pages/ag-asignacion/ag-asignacion.component';
 
 @NgModule({
   declarations: [
     agFuncionComponent,
+    agAsignacionComponent,
     SideBarComponent,
     AGFormComponent,
     ListaTerminadosComponent,
     GraphicsComponent,
     ResultadosComponent,
     InicioComponent,
+    FormularioAsignacionComponent,
   ],
   imports: [
     CommonModule,

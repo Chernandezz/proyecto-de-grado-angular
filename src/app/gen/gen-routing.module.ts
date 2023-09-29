@@ -3,11 +3,16 @@ import { RouterModule, Routes } from '@angular/router';
 import { agFuncionComponent } from './pages/ag-funcion/ag-funcion.component';
 import { GraphicsComponent } from './pages/graphics/graphics.component';
 import { InicioComponent } from './pages/inicio/inicio/inicio.component';
+import { agAsignacionComponent } from './pages/ag-asignacion/ag-asignacion.component';
 
 const routes: Routes = [
   {
     path: 'formulario',
     component: agFuncionComponent,
+  },
+  {
+    path: 'formularioAsignacion',
+    component: agAsignacionComponent,
   },
   {
     path: 'resultados',

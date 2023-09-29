@@ -1,0 +1,24 @@
+.equation-container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.variable-input {
+  display: flex;
+  align-items: center;
+  margin-right: 15px; /* Aumenta el margen a la derecha de cada grupo de input */
+}
+
+.variable-input input {
+  width: 60px; /* Aumenta el ancho del input */
+  margin-right: 5px;
+  text-align: right; /* Alinea el texto a la derecha para mejorar la visibilidad */
+}
+
+.variable-input span {
+  margin-right: 5px;
+}

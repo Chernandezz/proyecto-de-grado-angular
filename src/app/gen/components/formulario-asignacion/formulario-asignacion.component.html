@@ -1,18 +1,19 @@
 <h1 class="text-center">Algoritmo Genético</h1>
-<h2 class="text-center">Funcion</h2>
+<h2 class="text-center">Asignacion</h2>
 <div class="d-flex justify-content-center">
-  <form id="formulario" class="w-75" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
+  <form id="formulario" class="w-75">
     <div class="row">
       <div class="col-lg-6">
-        <label class="form-label">Función objetivo:</label>
-        <div class="mb-3">
-          <!-- Inside the <form> tag -->
-          <input type="text" class="form-control invalid" placeholder="Ejemplo: X^2 - 3X + 2" formControlName="funcion">
-          <span class="form-text text-danger" *ngIf="isValidField('funcion')">
-            ¡Este campo es requerido!
-          </span>
-
+        <label class="form-label">Función Asignacion:</label>
+        <div class="equation-container">
+          <div *ngFor="let variable of variables; let i = index; let isLast = last" class="variable-input">
+            <input type="number" class="form-control" (input)="onInputChange(i, $event)">x{{ variable }}
+            <span *ngIf="!isLast"> + </span>
+          </div>
         </div>
+
+
+
         <div class="mb-3">
           <label class="form-label">Tipo de selección:</label>
           <select class="form-select" formControlName="tipoSeleccion">
@@ -82,9 +83,6 @@
         <div class="mb-3">
           <label class="form-label">Tam. de la población:</label>
           <input type="number" class="form-control" value="7" formControlName="numIndividuos">
-          <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
-            ¡Debe ser mayor a 5!
-          </span>
         </div>
 
         <div class="mb-3">
@@ -108,9 +106,9 @@
           <button type="submit" class="btn btn-primary">Agregar a la cola</button>
         </div>
         <div class="col-lg-auto mb-3">
-          <a (click)="irAResultados()" class="btn btn-success" >Ejecutar</a>
+          <a  class="btn btn-success">Ejecutar</a>
         </div>
-        
+
       </div>
     </div>
   </form>
