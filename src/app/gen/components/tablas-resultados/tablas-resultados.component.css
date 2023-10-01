@@ -1,0 +1,5 @@
+.table-limited-height {
+  max-height: 400px; /* Asumiendo que cada fila tiene una altura de 40px */
+  overflow-y: auto; /* Habilitar scroll vertical si es necesario */
+  display: block; /* Convertir en bloque para que funcione el overflow */
+}

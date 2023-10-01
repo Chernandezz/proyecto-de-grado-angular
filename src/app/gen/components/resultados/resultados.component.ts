@@ -9,10 +9,11 @@ import { AlgoritmoGenetico } from '../../services/genClass';
 @Component({
   selector: 'gen-resultados',
   templateUrl: './resultados.component.html',
-  styles: [],
+  styleUrls: ['./resultados.component.css'],
 })
 export class ResultadosComponent implements OnInit {
   public chart: any;
+  public showGraph: boolean = false;
 
   constructor(private gen: GeneticService) {}
 

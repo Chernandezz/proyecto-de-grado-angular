@@ -1,3 +1,20 @@
-<div class="chart-container">
+<div class="d-flex justify-content-center gap-3">
+  
+  <button routerLink="/genetico/formulario" class="btn btn-danger">Regresar</button>
+  <button [class.btn-outline-primary]="showGraph" [class.btn-primary]="!showGraph" class="btn"
+    (click)="showGraph = false">Ver Tablas</button>
+  <button [class.btn-outline-primary]="!showGraph" [class.btn-primary]="showGraph" class="btn mr-2"
+    (click)="showGraph = true">Ver Gráficas</button>
+  
+</div>
+
+<!-- Mostrar gráficas -->
+<div [hidden]="!showGraph" class="chart-container">
   <canvas id="MyChart">{{ chart }}</canvas>
+</div>
+
+<!-- Mostrar tablas -->
+<div [hidden]="showGraph">
+  <!-- Aquí irá el código HTML para mostrar las tablas -->
+  <gen-tablas-resultados></gen-tablas-resultados>
 </div>

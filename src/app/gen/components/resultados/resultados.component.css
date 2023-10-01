@@ -1,0 +1,10 @@
+.btn {
+    border-radius: 20px; /* Bordes redondeados */
+    padding: 10px 20px;  /* Espaciado interno más grande */
+    font-weight: 500;    /* Texto en negrita */
+    transition: background-color 0.3s, border-color 0.3s; /* Transición suave al cambiar de color */
+}
+
+.btn:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra al pasar el mouse */
+}

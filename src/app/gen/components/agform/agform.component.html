@@ -3,15 +3,12 @@
 <div class="d-flex justify-content-center">
   <form id="formulario" class="w-75" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
     <div class="row">
+      <!-- COLUMNA 1 DEL FORMULARIO -->
       <div class="col-lg-6">
-        <label class="form-label">Función objetivo:</label>
         <div class="mb-3">
-          <!-- Inside the <form> tag -->
-          <input type="text" class="form-control invalid" placeholder="Ejemplo: X^2 - 3X + 2" formControlName="funcion">
-          <span class="form-text text-danger" *ngIf="isValidField('funcion')">
-            ¡Este campo es requerido!
-          </span>
-
+          <label class="form-label">Función objetivo:</label>
+          <input type="text" class="form-control" placeholder="Ejemplo: X^2 - 3X + 2" formControlName="funcion">
+          <span class="form-text text-danger" *ngIf="isValidField('funcion')">¡Este campo es requerido!</span>
         </div>
         <div class="mb-3">
           <label class="form-label">Tipo de selección:</label>
@@ -45,11 +42,13 @@
         <div class="mb-3">
           <label class="form-label">Prob. de cruce:</label>
           <input type="number" class="form-control" placeholder="0,8" formControlName="probCruce">
+          <span class="form-text text-danger" *ngIf="isValidField('probCruce')">¡Este campo es requerido!</span>
         </div>
 
         <div class="mb-3">
           <label class="form-label">Prob. de mutación:</label>
           <input type="number" class="form-control" placeholder="0,1" formControlName="probMutacion">
+          <span class="form-text text-danger" *ngIf="isValidField('probMutacion')">¡Este campo es requerido!</span>
         </div>
       </div>
 
@@ -58,8 +57,8 @@
         <div class="mb-3">
           <label class="form-label">Decimales:</label>
           <input type="number" class="form-control" placeholder="2" formControlName="numDecimales">
+          <span class="form-text text-danger" *ngIf="isValidField('numDecimales')">¡Este campo es requerido!</span>
         </div>
-
         <div class="mb-3">
           <div class="form-check">
             <label class="form-check-label">Elitismo</label>
@@ -98,19 +97,20 @@
         </div>
       </div>
     </div>
+
     <div class="col-lg-12">
       <div class="row justify-content-between mt-4">
         <div class="col-lg-auto mb-3">
           <label class="form-label">Título de la ejecución:</label>
           <input type="text" class="form-control" placeholder="Ejemplo: AG 1" formControlName="tituloEjecucion">
+          <span class="form-text text-danger" *ngIf="isValidField('tituloEjecucion')">¡Este campo es requerido!</span>
         </div>
         <div class="col-lg-auto mb-3">
           <button type="submit" class="btn btn-primary">Agregar a la cola</button>
         </div>
         <div class="col-lg-auto mb-3">
-          <a (click)="irAResultados()" class="btn btn-success" >Ejecutar</a>
+          <button (click)="irAResultados()" class="btn btn-success">Ejecutar</button>
         </div>
-        
       </div>
     </div>
   </form>
