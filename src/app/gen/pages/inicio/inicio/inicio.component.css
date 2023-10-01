@@ -27,3 +27,10 @@
 .btn-custom:hover {
   background-color: #ff4747;
 }
+
+.card-img-top {
+    height: 200px; /* Ajusta según tus necesidades */
+    object-fit: cover; /* Asegura que la imagen cubra el espacio sin estirarse */
+    object-position: center; /* Centra la imagen */
+}
+

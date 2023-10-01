@@ -1,116 +1,109 @@
-<h1 class="text-center">Algoritmo Genético</h1>
-<h2 class="text-center">Funcion</h2>
-<div class="d-flex justify-content-center">
-  <form id="formulario" class="w-75" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
+<div class="bg-light p-4 rounded">
+  <h1 class="text-center mb-4">Algoritmo Genético</h1>
+  <h2 class="text-center mb-4">Función</h2>
+  <form id="formulario" class="w-100" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
     <div class="row">
       <!-- COLUMNA 1 DEL FORMULARIO -->
       <div class="col-lg-6">
-        <div class="mb-3">
-          <label class="form-label">Función objetivo:</label>
-          <input type="text" class="form-control" placeholder="Ejemplo: X^2 - 3X + 2" formControlName="funcion">
-          <span class="form-text text-danger" *ngIf="isValidField('funcion')">¡Este campo es requerido!</span>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Tipo de selección:</label>
-          <select class="form-select" formControlName="tipoSeleccion">
-            <option value="ruleta" selected>Ruleta</option>
-            <option value="torneo" disabled>Torneo</option>
-            <option value="universal" disabled>Universal</option>
-            <option value="ranking" disabled>Ranking</option>
-            <option value="restos" disabled>Restos</option>
-            <option value="estocastico" disabled>Estocastico</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Tipo de cruce:</label>
-          <select class="form-select" formControlName="tipoCruce">
-            <option value="un-punto" selected>Un punto</option>
-            <option value="dos-puntos" disabled>Dos puntos</option>
-            <option value="uniforme" disabled>Uniforme</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="tipo-mutacion" class="form-label">Tipo de mutación:</label>
-          <select id="tipo-mutacion" class="form-select" formControlName="tipoMutacion">
-            <option value="bit-flip">Bit flip</option>
-            <option value="intercambio" disabled>Intercambio</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Prob. de cruce:</label>
-          <input type="number" class="form-control" placeholder="0,8" formControlName="probCruce">
-          <span class="form-text text-danger" *ngIf="isValidField('probCruce')">¡Este campo es requerido!</span>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Prob. de mutación:</label>
-          <input type="number" class="form-control" placeholder="0,1" formControlName="probMutacion">
-          <span class="form-text text-danger" *ngIf="isValidField('probMutacion')">¡Este campo es requerido!</span>
+        <div class="card mb-4 p-3">
+          <h4 class="card-title mb-3">Configuración</h4>
+          <div class="mb-3">
+            <label class="form-label">Función objetivo:</label>
+            <input type="text" class="form-control" placeholder="Ejemplo: X^2 - 3X + 2" formControlName="funcion">
+            <span class="form-text text-danger" *ngIf="isValidField('funcion')">¡Este campo es requerido!</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo de selección:</label>
+            <select class="form-select" formControlName="tipoSeleccion">
+              <option value="ruleta" selected>Ruleta</option>
+              <option value="torneo" disabled>Torneo</option>
+              <option value="universal" disabled>Universal</option>
+              <option value="ranking" disabled>Ranking</option>
+              <option value="restos" disabled>Restos</option>
+              <option value="estocastico" disabled>Estocastico</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo de cruce:</label>
+            <select class="form-select" formControlName="tipoCruce">
+              <option value="un-punto" selected>Un punto</option>
+              <option value="dos-puntos" disabled>Dos puntos</option>
+              <option value="uniforme" disabled>Uniforme</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="tipo-mutacion" class="form-label">Tipo de mutación:</label>
+            <select id="tipo-mutacion" class="form-select" formControlName="tipoMutacion">
+              <option value="bit-flip">Bit flip</option>
+              <option value="intercambio" disabled>Intercambio</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prob. de cruce:</label>
+            <input type="number" class="form-control" placeholder="0,8" formControlName="probCruce">
+            <span class="form-text text-danger" *ngIf="isValidField('probCruce')">¡Este campo es requerido!</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prob. de mutación:</label>
+            <input type="number" class="form-control" placeholder="0,1" formControlName="probMutacion">
+            <span class="form-text text-danger" *ngIf="isValidField('probMutacion')">¡Este campo es requerido!</span>
+          </div>
         </div>
       </div>
 
       <!-- COLUMNA 2 DEL FORMULARIO -->
       <div class="col-lg-6">
-        <div class="mb-3">
-          <label class="form-label">Decimales:</label>
-          <input type="number" class="form-control" placeholder="2" formControlName="numDecimales">
-          <span class="form-text text-danger" *ngIf="isValidField('numDecimales')">¡Este campo es requerido!</span>
-        </div>
-        <div class="mb-3">
-          <div class="form-check">
-            <label class="form-check-label">Elitismo</label>
-            <input type="checkbox" class="form-check-input" formControlName="elitismo">
+        <div class="card mb-4 p-3">
+          <h4 class="card-title mb-3">Parámetros</h4>
+          <div class="mb-3">
+            <label class="form-label">Decimales:</label>
+            <input type="number" class="form-control" placeholder="2" formControlName="numDecimales">
+            <span class="form-text text-danger" *ngIf="isValidField('numDecimales')">¡Este campo es requerido!</span>
           </div>
-        </div>
-
-        <div class="mb-3">
-          <div class="form-check">
-            <label class="form-check-label">Detenerse en Convergencia</label>
-            <input type="checkbox" class="form-check-input" formControlName="convergencia">
+          <div class="mb-3">
+            <div class="form-check">
+              <label class="form-check-label">Elitismo</label>
+              <input type="checkbox" class="form-check-input" formControlName="elitismo">
+            </div>
           </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Num. de iteraciones:</label>
-          <input type="number" class="form-control" value="1000" formControlName="numGeneraciones">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Tam. de la población:</label>
-          <input type="number" class="form-control" value="7" formControlName="numIndividuos">
-          <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
-            ¡Debe ser mayor a 5!
-          </span>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Xmin:</label>
-          <input type="number" class="form-control" value="0" formControlName="xMin">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Xmax:</label>
-          <input type="number" class="form-control" value="10" formControlName="xMax">
+          <div class="mb-3">
+            <div class="form-check">
+              <label class="form-check-label">Detenerse en Convergencia</label>
+              <input type="checkbox" class="form-check-input" formControlName="convergencia">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Num. de iteraciones:</label>
+            <input type="number" class="form-control" value="1000" formControlName="numGeneraciones">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tam. de la población:</label>
+            <input type="number" class="form-control" value="7" formControlName="numIndividuos">
+            <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
+              ¡Debe ser mayor a 5!
+            </span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Xmin:</label>
+            <input type="number" class="form-control" value="0" formControlName="xMin">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Xmax:</label>
+            <input type="number" class="form-control" value="10" formControlName="xMax">
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="col-lg-12">
-      <div class="row justify-content-between mt-4">
-        <div class="col-lg-auto mb-3">
-          <label class="form-label">Título de la ejecución:</label>
-          <input type="text" class="form-control" placeholder="Ejemplo: AG 1" formControlName="tituloEjecucion">
-          <span class="form-text text-danger" *ngIf="isValidField('tituloEjecucion')">¡Este campo es requerido!</span>
-        </div>
-        <div class="col-lg-auto mb-3">
-          <button type="submit" class="btn btn-primary">Agregar a la cola</button>
-        </div>
-        <div class="col-lg-auto mb-3">
-          <button (click)="irAResultados()" class="btn btn-success">Ejecutar</button>
-        </div>
+    <div class="d-flex justify-content-between mt-4">
+      <div class="col-lg-4">
+        <label class="form-label">Título de la ejecución:</label>
+        <input type="text" class="form-control" placeholder="Ejemplo: AG 1" formControlName="tituloEjecucion">
+        <span class="form-text text-danger" *ngIf="isValidField('tituloEjecucion')">¡Este campo es requerido!</span>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary me-2">Agregar a la cola</button>
+        <button (click)="irAResultados()" class="btn btn-success">Ejecutar</button>
       </div>
     </div>
   </form>
