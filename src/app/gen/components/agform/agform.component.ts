@@ -27,6 +27,7 @@ interface Formulario {
   styleUrls: ['./agform.component.css'],
 })
 export class AGFormComponent {
+  
   public formularioInicialAlgoritmo: FormGroup = this.fb.group({
     funcion: ['2x+2', Validators.required],
     tipoSeleccion: ['ruleta', Validators.required],
