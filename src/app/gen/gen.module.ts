@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { agFuncionComponent } from './pages/ag-funcion/ag-funcion.component';
 import { GenRoutingModule } from './gen-routing.module';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GraphicsComponent } from './pages/graphics/graphics.component';
 // import { LinesChartComponent } from './components/lines-chart/lines-chart.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -30,6 +30,7 @@ import { TablasResultadosComponent } from './components/tablas-resultados/tablas
   ],
   imports: [
     CommonModule,
+    FormsModule,
     GenRoutingModule,
     ReactiveFormsModule,
     NgApexchartsModule,
