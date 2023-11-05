@@ -4,19 +4,22 @@ import { GeneticService } from '../../services/genetic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { arrCoeficiente } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
-import { arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes copy';
+import { arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-restriccion';
 
 interface Formulario {
-  arrCoeficientes: arrCoeficiente[];
-  tipoSeleccion: string;
-  tipoCruce: string;
-  tipoMutacion: string;
-  probCruce: number;
-  probMutacion: number;
-  elitismo: boolean;
+  arrRestriccion: arrRestriccion[];
+  arrCoeficiente: arrCoeficiente[];
   convergencia: boolean;
+  elitismo: boolean;
+  numDecimales: number;
   numGeneraciones: number;
   numIndividuos: number;
+  probCruce: number;
+  probMutacion: number;
+  Lind: number;
+  tipoCruce: string;
+  tipoMutacion: string;
+  tipoSeleccion: string;
   tituloEjecucion: string;
 }
 
@@ -77,7 +80,6 @@ export class FormularioAsignacionComponent {
   }
 
   public formularioInicialAlgoritmo: FormGroup = this.fb.group({
-    funcion: ['2x+2', Validators.required],
     tipoSeleccion: ['ruleta', Validators.required],
     tipoCruce: ['un-punto', Validators.required],
     tipoMutacion: ['bit-flip', Validators.required],
@@ -89,13 +91,10 @@ export class FormularioAsignacionComponent {
       0.1,
       [Validators.required, Validators.min(0), Validators.max(1)],
     ],
-    numDecimales: [2, Validators.min(0)],
     elitismo: false,
     convergencia: false,
     numGeneraciones: [1000, [Validators.required, Validators.min(5)]],
     numIndividuos: [100, [Validators.required, Validators.min(5)]],
-    xMin: [0],
-    xMax: [10],
     tituloEjecucion: ['', [Validators.required, Validators.maxLength(15)]],
   });
 
@@ -146,19 +145,11 @@ export class FormularioAsignacionComponent {
     const tituloEjecucion =
       this.formularioInicialAlgoritmo.value['tituloEjecucion'];
     this.showToast(`${tituloEjecucion} - agregado con exito!`, true);
-    this.geneticService.getFunction(
-      this.formularioInicialAlgoritmo.value as Formulario, this.coeficientesArray, this.restriccionesArray
+    this.geneticService.getFunctionAsignacion(
+      this.formularioInicialAlgoritmo.value as Formulario,
+      this.coeficientesArray,
+      this.restriccionesArray
     );
-
-    console.log('coef');
-
-    console.log(this.coeficientesArray);
-
-    console.log('res');
-    console.log(this.restriccionesArray);
-
-    console.log('form');
-    console.log(this.formularioInicialAlgoritmo.value);
   }
 
   verificarNombreEjecucion() {

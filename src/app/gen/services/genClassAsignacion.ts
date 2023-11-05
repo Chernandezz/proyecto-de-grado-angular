@@ -1,7 +1,7 @@
 import * as math from 'mathjs';
 import { Individuo } from '../interfaces/Individuo';
 import { ResultadoAlgoritmo } from '../interfaces/Resultado';
-import { AlgorithmOptions } from '../interfaces/interfazFormAg';
+import { AlgorithmOptionsAsignacion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 class AlgoritmoGeneticoAsignacion {
   public tipoSeleccion!: string;
@@ -18,21 +18,20 @@ class AlgoritmoGeneticoAsignacion {
   public resultado!: ResultadoAlgoritmo;
   public tituloEjecucion!: string;
 
-  constructor(agConfig: AlgorithmOptions) {
+  constructor(agConfig: AlgorithmOptionsAsignacion) {
     // console.log(agConfig);
 
     this.initializeConfiguration(agConfig);
     // this.resultado = this.ejecutar();
   }
 
-  private initializeConfiguration(agConfig: AlgorithmOptions) {
+  private initializeConfiguration(agConfig: AlgorithmOptionsAsignacion) {
     this.tipoSeleccion = agConfig.tipoSeleccion;
     this.tamanoPoblacion = agConfig.numIndividuos;
     this.tipoCruce = agConfig.tipoCruce;
     this.tipoMutacion = agConfig.tipoMutacion;
     this.probabilidadCruce = agConfig.probCruce;
-    this.Lind = agConfig.
-    this.probabilidadMutacion = agConfig.probMutacion;
+    this.Lind = 5;
     this.numIteraciones = agConfig.numGeneraciones;
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;

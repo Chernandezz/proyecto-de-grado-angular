@@ -3,10 +3,14 @@ import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { AlgoritmoGenetico } from './genClass';
 import { BehaviorSubject } from 'rxjs';
 import { arrCoeficiente } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
+import { arrRestriccion } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-restriccion';
+import { AlgoritmoGeneticoAsignacion } from './genClassAsignacion';
+import { AlgorithmOptionsAsignacion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {
   private colaAlgoritmos: AlgoritmoGenetico[] = [];
+  private colaAlgoritmosAsignacion: AlgoritmoGeneticoAsignacion[] = [];
   private colaAlgoritmosSubject = new BehaviorSubject<AlgoritmoGenetico[]>([]);
   private listaTerminadosSubject = new BehaviorSubject<
     { tituloEjecucion: string; terminado: boolean }[]
@@ -59,7 +63,7 @@ export class GeneticService {
     if (todosTerminados) {
       // Cuando todos los algoritmos estén terminados, mostrar los resultados
       this.mostrarResultadosServiceSubject.next(true);
-    }else{
+    } else {
       this.mostrarResultadosServiceSubject.next(false);
     }
   }
@@ -78,13 +82,55 @@ export class GeneticService {
     }
   }
 
-  getFunction(genOptions: AlgorithmOptions, arrCoeficientes: arrCoeficiente, arrRestricciones) {
+  getFunctionAsignacion(
+    genOptions: AlgorithmOptionsAsignacion,
+    arrCoeficientes: arrCoeficiente[],
+    arrRestricciones: arrRestriccion[]
+  ) {
+    const newVariables = {
+      ...genOptions,
+    };
+    newVariables.arrCoeficiente = [...arrCoeficientes];
+    newVariables.arrRestriccion = [...arrRestricciones];
+
+    const tempLoader = {
+      tituloEjecucion: newVariables.tituloEjecucion,
+      terminado: false,
+    };
+
+    this.listaTerminados.push(tempLoader);
+    this.actualizarListaTerminados();
+    this.checkMostrarResultados();
+
+    if (typeof Worker !== 'undefined') {
+      try {
+        const worker = new Worker(
+          new URL('./worker-ag-asignacion.worker', import.meta.url)
+        );
+        worker.postMessage(newVariables);
+        worker.onmessage = (res) => {
+          this.colaAlgoritmos.push(res.data.resultado);
+          this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
+          this.actualizarColaAlgoritmos();
+          this.checkMostrarResultados();
+        };
+      } catch (error) {
+        console.error('Error al crear el Web Worker:', error);
+        // Manejo de errores: puedes agregar un mensaje de error o tomar medidas adicionales si es necesario
+      }
+    } else {
+      console.warn('Web workers are not supported in this environment.');
+      // Puedes agregar una notificación o un comportamiento alternativo aquí si los Web Workers no son compatibles
+    }
+  }
+
+  getFunction(genOptions: AlgorithmOptions) {
     const newVariables = { ...genOptions };
     const tempLoader = {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
     };
-    
+
     this.listaTerminados.push(tempLoader);
     this.actualizarListaTerminados();
     this.checkMostrarResultados();
