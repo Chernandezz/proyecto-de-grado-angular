@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { AlgoritmoGenetico } from './genClass';
 import { BehaviorSubject } from 'rxjs';
-import { arrCoeficiente } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
-import { arrRestriccion } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-restriccion';
 import { AlgoritmoGeneticoAsignacion } from './genClassAsignacion';
-import { AlgorithmOptionsAsignacion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
+import { AlgorithmOptionsAsignacion, arrCoeficiente, arrRestriccion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {

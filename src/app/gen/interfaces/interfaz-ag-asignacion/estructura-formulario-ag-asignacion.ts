@@ -1,6 +1,3 @@
-import { arrCoeficiente } from "./interfaz-ag-asignacion-coeficientes";
-import { arrRestriccion } from "./interfaz-ag-asignacion-restriccion";
-
 export interface AlgorithmOptionsAsignacion {
   arrRestriccion: arrRestriccion[];
   arrCoeficiente: arrCoeficiente[];
@@ -16,4 +13,14 @@ export interface AlgorithmOptionsAsignacion {
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+}
+
+export interface arrCoeficiente {
+  index: number;
+  value: number;
+}
+
+export interface arrRestriccion {
+  operador: string;
+  value: number;
 }

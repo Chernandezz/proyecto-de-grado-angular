@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneticService } from '../../services/genetic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { arrCoeficiente } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
-import { arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-restriccion';
+import { arrCoeficiente, arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 interface Formulario {
   arrRestriccion: arrRestriccion[];

@@ -1,10 +1,16 @@
 import * as math from 'mathjs';
 import { Individuo } from '../interfaces/Individuo';
 import { ResultadoAlgoritmo } from '../interfaces/Resultado';
-import { AlgorithmOptionsAsignacion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
+import {
+  AlgorithmOptionsAsignacion,
+  arrCoeficiente,
+  arrRestriccion,
+} from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 class AlgoritmoGeneticoAsignacion {
   public tipoSeleccion!: string;
+  public arrCoeficiente!: arrCoeficiente[];
+  public arrRestriccion!: arrRestriccion[];
   public tamanoPoblacion!: number;
   public tipoCruce!: string;
   public tipoMutacion!: string;
@@ -19,143 +25,121 @@ class AlgoritmoGeneticoAsignacion {
   public tituloEjecucion!: string;
 
   constructor(agConfig: AlgorithmOptionsAsignacion) {
-    // console.log(agConfig);
+    console.log(agConfig);
+    console.log('AlgoritmoGeneticoAsignacion');
 
     this.initializeConfiguration(agConfig);
-    // this.resultado = this.ejecutar();
+    this.resultado = this.ejecutar();
   }
 
   private initializeConfiguration(agConfig: AlgorithmOptionsAsignacion) {
+    this.arrCoeficiente = agConfig.arrCoeficiente;
+    this.arrRestriccion = agConfig.arrRestriccion;
     this.tipoSeleccion = agConfig.tipoSeleccion;
     this.tamanoPoblacion = agConfig.numIndividuos;
     this.tipoCruce = agConfig.tipoCruce;
+    this.arrCoeficiente = agConfig.arrCoeficiente;
+    this.arrRestriccion = agConfig.arrRestriccion;
     this.tipoMutacion = agConfig.tipoMutacion;
     this.probabilidadCruce = agConfig.probCruce;
-    this.Lind = 5;
+    this.Lind = this.arrCoeficiente.length;
     this.numIteraciones = agConfig.numGeneraciones;
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;
-    // this.poblacion = this.generarPoblacionInicial();
+    this.poblacion = this.generarPoblacionInicial();
+
     this.tituloEjecucion = agConfig.tituloEjecucion;
-
-    if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
-      this.normalizarPoblacion();
-    }
+    // if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
+    //   this.normalizarPoblacion();
+    // }
   }
 
-  private normalizarPoblacion(): void {
-    // Encontrar el menor fitness de la población
-    const minFitness = Math.min(
-      ...this.poblacion.map((individuo) => individuo.fitness)
-    );
+  // private normalizarPoblacion(): void {
+  //   // Encontrar el menor fitness de la población
+  //   const minFitness = Math.min(
+  //     ...this.poblacion.map((individuo) => individuo.fitness)
+  //   );
 
-    // Calcular el valor de fx para cada individuo
-    this.poblacion = this.poblacion.map((individuo) => {
-      individuo.fx = individuo.fitness - minFitness * 2;
-      return individuo;
-    });
+  //   // Calcular el valor de fx para cada individuo
+  //   this.poblacion = this.poblacion.map((individuo) => {
+  //     individuo.fx = individuo.fitness - minFitness * 2;
+  //     return individuo;
+  //   });
 
-    // Calcular la suma de los fx
-    const fxTotal = this.poblacion.reduce(
-      (total, individuo) => total + individuo.fx,
-      0
-    );
-
-    let probabilidadAcumulada = 0;
-    // Calcular la probabilidad de cada individuo
-    for (let i = 0; i < this.tamanoPoblacion; i++) {
-      this.poblacion[i]['probabilidad'] = this.poblacion[i]['fx'] / fxTotal;
-      // Calcular la probabilidad acumulada de cada individuo
-      this.poblacion[i]['probabilidadAcumulada'] =
-        probabilidadAcumulada + this.poblacion[i]['probabilidad'];
-      probabilidadAcumulada = this.poblacion[i]['probabilidadAcumulada'];
-    }
-  }
-
-  private seDebeNormalizar(): boolean {
-    const minFitness = Math.min(
-      ...this.poblacion.map((individuo) => individuo.fitness)
-    );
-    return minFitness < 0 ? true : false;
-  }
-
-  // private generarPoblacionInicial(): Individuo[] {
-  //   const poblacionInicial: Individuo[] = [];
-  //   let fxTotal = 0;
-
-  //   for (let i = 0; i < this.tamanoPoblacion; i++) {
-  //     const individuo: Individuo = {
-  //       cromosoma: [],
-  //       binario: '',
-  //       xi: 0,
-  //       fitness: 0,
-  //       probabilidadAcumulada: 0,
-  //       probabilidad: 0,
-  //       fx: 0,
-  //     };
-
-  //     const cromosoma = [];
-  //     for (let k = 0; k < this.Lind; k++) {
-  //       cromosoma.push(Math.random() < 0.5 ? 0 : 1);
-  //     }
-  //     individuo.cromosoma = [...cromosoma];
-  //     individuo.binario = cromosoma.join('');
-
-  //     // Calcular los valores de xi
-  //     const xi =
-  //       this.xmin +
-  //       (parseInt(individuo.binario, 2) * (this.xmax - this.xmin)) /
-  //         (Math.pow(2, this.Lind) - 1);
-  //     individuo.xi = xi;
-
-  //     // Verificar si la propiedad expresionFuncionObjetivo está definida
-  //     if (this.expresionFuncionObjetivo) {
-  //       // Calcular el valor de fitness usando los valores de xi
-  //       individuo.fitness = this.expresionFuncionObjetivo({ x: xi });
-  //       fxTotal += individuo.fitness;
-  //     } else {
-  //       // En caso de que expresionFuncionObjetivo no esté definida, establece fitness en 0 o algún otro valor predeterminado
-  //       individuo.fitness = 0; // Puedes ajustar esto según tus necesidades
-  //     }
-
-  //     poblacionInicial.push(individuo);
-  //   }
-
-  //   this.actualizarProbabilidades(poblacionInicial);
-
-  //   return poblacionInicial;
-  // }
-
-  // private actualizarProbabilidades(poblacion: Individuo[]) {
-  //   let probabilidadAcumulada = 0;
-  //   let fxTotal = poblacion.reduce(
-  //     (total, individuo) => total + individuo.fitness,
+  //   // Calcular la suma de los fx
+  //   const fxTotal = this.poblacion.reduce(
+  //     (total, individuo) => total + individuo.fx,
   //     0
   //   );
 
+  //   let probabilidadAcumulada = 0;
+  //   // Calcular la probabilidad de cada individuo
   //   for (let i = 0; i < this.tamanoPoblacion; i++) {
-  //     poblacion[i].probabilidad = poblacion[i].fitness / fxTotal;
-  //     poblacion[i].probabilidadAcumulada =
-  //       probabilidadAcumulada + poblacion[i].probabilidad;
-  //     probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
+  //     this.poblacion[i]['probabilidad'] = this.poblacion[i]['fx'] / fxTotal;
+  //     // Calcular la probabilidad acumulada de cada individuo
+  //     this.poblacion[i]['probabilidadAcumulada'] =
+  //       probabilidadAcumulada + this.poblacion[i]['probabilidad'];
+  //     probabilidadAcumulada = this.poblacion[i]['probabilidadAcumulada'];
   //   }
   // }
 
-  // private createObjectiveFunction(expression: string): (params: any) => number {
-  //   const mathExpression = math.compile(expression);
-  //   return (variables) => {
-  //     const result = mathExpression.evaluate(variables);
-  //     return Number(result.toFixed(this.n));
-  //   };
-  // }
-
-  // private calculateLindValue(): number {
-  //   return Math.ceil(
-  //     Math.log2(1 + (this.xmax - this.xmin) * Math.pow(10, this.n))
+  // private seDebeNormalizar(): boolean {
+  //   const minFitness = Math.min(
+  //     ...this.poblacion.map((individuo) => individuo.fitness)
   //   );
+  //   return minFitness < 0 ? true : false;
   // }
 
-  // // Paso Ejecutar
+  private generarPoblacionInicial(): Individuo[] {
+    const poblacionInicial: Individuo[] = [];
+
+    for (let i = 0; i < this.tamanoPoblacion; i++) {
+      const individuo: Individuo = {
+        cromosoma: [],
+        binario: '',
+        xi: 0,
+        fitness: 0, // No se usa
+        probabilidadAcumulada: 0,
+        probabilidad: 0,
+        fx: 0,
+      };
+
+      const cromosoma = [];
+      for (let k = 0; k < this.Lind; k++) {
+        cromosoma.push(Math.random() < 0.5 ? 0 : 1);
+      }
+      individuo.cromosoma = [...cromosoma];
+      individuo.binario = cromosoma.join('');
+
+      // Calculo de Z/
+      let z = 0;
+      for (let j = 0; j < this.Lind; j++) {
+        z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
+      }
+      individuo.xi = z;
+
+      poblacionInicial.push(individuo);
+    }
+
+    this.actualizarProbabilidades(poblacionInicial);
+
+    return poblacionInicial;
+  }
+
+  private actualizarProbabilidades(poblacion: Individuo[]) {
+    let probabilidadAcumulada = 0;
+    let fxTotal = poblacion.reduce(
+      (total, individuo) => total + individuo.xi,
+      0
+    );
+
+    for (let i = 0; i < this.tamanoPoblacion; i++) {
+      poblacion[i].probabilidad = poblacion[i].xi / fxTotal;
+      poblacion[i].probabilidadAcumulada =
+        probabilidadAcumulada + poblacion[i].probabilidad;
+      probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
+    }
+  }
 
   // private ejecutar(): ResultadoAlgoritmo {
   //   let tablaInicial = this.limitarDecimales();

@@ -5,9 +5,8 @@ import { AlgoritmoGeneticoAsignacion } from "./genClassAsignacion";
 
 
 addEventListener('message', ({ data }) => {
-  log(data);
-  // let res = new AlgoritmoGeneticoAsignacion(data);
+  let res = new AlgoritmoGeneticoAsignacion(data);
 
-  // postMessage({ resultado: res });
+  postMessage({ resultado: res });
 });
   
