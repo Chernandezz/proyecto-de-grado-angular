@@ -3,21 +3,20 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneticService } from '../../services/genetic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { arrCoeficiente } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
+import { arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes copy';
 
 interface Formulario {
-  funcion: string;
+  arrCoeficientes: arrCoeficiente[];
   tipoSeleccion: string;
   tipoCruce: string;
   tipoMutacion: string;
   probCruce: number;
   probMutacion: number;
-  numDecimales: number;
   elitismo: boolean;
   convergencia: boolean;
   numGeneraciones: number;
   numIndividuos: number;
-  xMin: number;
-  xMax: number;
   tituloEjecucion: string;
 }
 
@@ -31,7 +30,7 @@ export class FormularioAsignacionComponent {
   public asignacionCoeficientes: boolean = true;
   public asignacionRestricciones: boolean = false;
   public mostrarFormulario: boolean = false;
-  public coeficientesArray: any[] = [
+  public coeficientesArray: arrCoeficiente[] = [
     {
       index: 1,
       value: 0,
@@ -45,14 +44,16 @@ export class FormularioAsignacionComponent {
     });
   }
 
-  public restriccionesArray: any[] = [
+  public restriccionesArray: arrRestriccion[] = [
     {
+      operador: '<=',
       value: 0,
     },
   ];
 
   agregarRestriccion() {
     this.restriccionesArray.push({
+      operador: '<=',
       value: 0,
     });
   }
@@ -146,8 +147,18 @@ export class FormularioAsignacionComponent {
       this.formularioInicialAlgoritmo.value['tituloEjecucion'];
     this.showToast(`${tituloEjecucion} - agregado con exito!`, true);
     this.geneticService.getFunction(
-      this.formularioInicialAlgoritmo.value as Formulario
+      this.formularioInicialAlgoritmo.value as Formulario, this.coeficientesArray, this.restriccionesArray
     );
+
+    console.log('coef');
+
+    console.log(this.coeficientesArray);
+
+    console.log('res');
+    console.log(this.restriccionesArray);
+
+    console.log('form');
+    console.log(this.formularioInicialAlgoritmo.value);
   }
 
   verificarNombreEjecucion() {

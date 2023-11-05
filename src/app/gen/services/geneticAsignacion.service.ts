@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { AlgorithmOptions } from '../interfaces/interfazFormAg';
-import { AlgoritmoGenetico } from './genClass';
 import { BehaviorSubject } from 'rxjs';
 import { arrCoeficiente } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes';
+import { AlgoritmoGeneticoAsignacion } from './genClassAsignacion';
+import { arrRestriccion } from '../interfaces/interfaz-ag-asignacion/interfaz-ag-asignacion-coeficientes copy';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {
-  private colaAlgoritmos: AlgoritmoGenetico[] = [];
-  private colaAlgoritmosSubject = new BehaviorSubject<AlgoritmoGenetico[]>([]);
+  private colaAlgoritmos: AlgoritmoGeneticoAsignacion[] = [];
+  private colaAlgoritmosSubject = new BehaviorSubject<
+    AlgoritmoGeneticoAsignacion[]
+  >([]);
   private listaTerminadosSubject = new BehaviorSubject<
     { tituloEjecucion: string; terminado: boolean }[]
   >([]);
@@ -59,7 +62,7 @@ export class GeneticService {
     if (todosTerminados) {
       // Cuando todos los algoritmos estén terminados, mostrar los resultados
       this.mostrarResultadosServiceSubject.next(true);
-    }else{
+    } else {
       this.mostrarResultadosServiceSubject.next(false);
     }
   }
@@ -78,13 +81,17 @@ export class GeneticService {
     }
   }
 
-  getFunction(genOptions: AlgorithmOptions, arrCoeficientes: arrCoeficiente, arrRestricciones) {
+  getFunction(
+    genOptions: AlgorithmOptions,
+    arrCoeficientes: arrCoeficiente,
+    arrRestricciones: arrRestriccion
+  ) {
     const newVariables = { ...genOptions };
     const tempLoader = {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
     };
-    
+
     this.listaTerminados.push(tempLoader);
     this.actualizarListaTerminados();
     this.checkMostrarResultados();
