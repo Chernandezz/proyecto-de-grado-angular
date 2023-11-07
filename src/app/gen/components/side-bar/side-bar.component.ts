@@ -25,4 +25,8 @@ export class SideBarComponent implements OnDestroy {
     this.gen.eliminarAlgoritmo(nombre);
   }
 
+  limpiarCola() {
+    this.gen.limpiarCola();
+  }
+
 }

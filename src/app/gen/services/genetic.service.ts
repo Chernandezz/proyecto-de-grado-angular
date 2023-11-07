@@ -39,6 +39,13 @@ export class GeneticService {
     return [...this.colaAlgoritmos];
   }
 
+  limpiarCola(){
+    this.colaAlgoritmos = [];
+    this.listaTerminados = [];
+    this.actualizarColaAlgoritmos();
+    this.actualizarListaTerminados();
+  }
+
   eliminarAlgoritmo(nombre: string) {
     this.colaAlgoritmos = this.colaAlgoritmos.filter(
       (algo) => algo.tituloEjecucion !== nombre

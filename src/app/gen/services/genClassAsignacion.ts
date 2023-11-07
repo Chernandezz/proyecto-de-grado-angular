@@ -25,7 +25,6 @@ class AlgoritmoGeneticoAsignacion {
   public tituloEjecucion!: string;
 
   constructor(agConfig: AlgorithmOptionsAsignacion) {
-
     this.initializeConfiguration(agConfig);
     this.resultado = this.ejecutar();
   }
@@ -46,47 +45,7 @@ class AlgoritmoGeneticoAsignacion {
     this.elitismo = agConfig.elitismo;
     this.poblacion = this.generarPoblacionInicial();
     this.tituloEjecucion = agConfig.tituloEjecucion;
-
-    // if (this.tipoSeleccion === 'ruleta' && this.seDebeNormalizar()) {
-    //   this.normalizarPoblacion();
-    // }
   }
-
-  // private normalizarPoblacion(): void {
-  //   // Encontrar el menor fitness de la población
-  //   const minFitness = Math.min(
-  //     ...this.poblacion.map((individuo) => individuo.fitness)
-  //   );
-
-  //   // Calcular el valor de fx para cada individuo
-  //   this.poblacion = this.poblacion.map((individuo) => {
-  //     individuo.fx = individuo.fitness - minFitness * 2;
-  //     return individuo;
-  //   });
-
-  //   // Calcular la suma de los fx
-  //   const fxTotal = this.poblacion.reduce(
-  //     (total, individuo) => total + individuo.fx,
-  //     0
-  //   );
-
-  //   let probabilidadAcumulada = 0;
-  //   // Calcular la probabilidad de cada individuo
-  //   for (let i = 0; i < this.tamanoPoblacion; i++) {
-  //     this.poblacion[i]['probabilidad'] = this.poblacion[i]['fx'] / fxTotal;
-  //     // Calcular la probabilidad acumulada de cada individuo
-  //     this.poblacion[i]['probabilidadAcumulada'] =
-  //       probabilidadAcumulada + this.poblacion[i]['probabilidad'];
-  //     probabilidadAcumulada = this.poblacion[i]['probabilidadAcumulada'];
-  //   }
-  // }
-
-  // private seDebeNormalizar(): boolean {
-  //   const minFitness = Math.min(
-  //     ...this.poblacion.map((individuo) => individuo.fitness)
-  //   );
-  //   return minFitness < 0 ? true : false;
-  // }
 
   private generarPoblacionInicial(): Individuo[] {
     const poblacionInicial: Individuo[] = [];
@@ -127,7 +86,6 @@ class AlgoritmoGeneticoAsignacion {
                 valido = z < restriccion.value ? false : true;
                 break;
               case '>':
-                true;
                 valido = z <= restriccion.value ? false : true;
                 break;
               case '<':
@@ -165,7 +123,7 @@ class AlgoritmoGeneticoAsignacion {
 
   private ejecutar(): ResultadoAlgoritmo {
     let tablaInicial = [...this.poblacion];
-    
+
     let fitnessInicial = this.calculoFitnessTotal();
     let mejoresCromosomas = [];
     for (let i = 0; i < this.numIteraciones; i++) {
@@ -180,9 +138,6 @@ class AlgoritmoGeneticoAsignacion {
         cantidadHijos--;
       }
 
-      
-      
-
       // Ciclo para llenar la nueva tabla
       while (cantidadHijos > 0) {
         const padre1 = this.seleccionarPadre();
@@ -190,17 +145,17 @@ class AlgoritmoGeneticoAsignacion {
 
         // Este ciclo continúa hasta que se llenen todos los hijos requeridos.
         let hijos = this.cruzar(padre1, padre2);
-       hijos = hijos.map((hijo) => this.mutar(hijo));
-       hijos.forEach((hijo) => {
-         if (this.esIndividuoValido(hijo)) {
-           if (cantidadHijos > 0) {
-             nuevaPoblacion.push(hijo);
-             cantidadHijos--;
-           }
-         } else {
-           // Si el individuo no es válido, puedes elegir ignorarlo o generar uno nuevo.
-         }
-       });
+        hijos = hijos.map((hijo) => this.mutar(hijo));
+        hijos.forEach((hijo) => {
+          if (this.esIndividuoValido(hijo)) {
+            if (cantidadHijos > 0) {
+              nuevaPoblacion.push(hijo);
+              cantidadHijos--;
+            }
+          } else {
+            // Si el individuo no es válido, puedes elegir ignorarlo o generar uno nuevo.
+          }
+        });
       }
 
       // Actualizar la población con los nuevos hijos válidos
@@ -243,7 +198,6 @@ class AlgoritmoGeneticoAsignacion {
   }
 
   private actualizarPoblacion(nuevaPoblacion: Individuo[]) {
-
     for (const individuo of nuevaPoblacion) {
       individuo['binario'] = individuo.cromosoma.join('');
 
@@ -275,12 +229,6 @@ class AlgoritmoGeneticoAsignacion {
       case 'bit-flip':
         individuo = this.mutarBitflip(individuo);
         break;
-      // case 'intercambio':
-      //   individuo = this.mutarIntercambio(individuo);
-      //   break;
-      // default:
-      //   individuo = this.mutarBitflip(individuo);
-      //   break;
     }
     return individuo;
   }
@@ -305,21 +253,6 @@ class AlgoritmoGeneticoAsignacion {
       case 'ruleta':
         padre = this.seleccionarPadreRuleta();
         break;
-      // case 'universal':
-      //   padre = this.seleccionarPadreUniversal();
-      //   break;
-      // case 'torneo':
-      //   padre = this.seleccionarPadreTorneo();
-      //   break;
-      // case 'ranking':
-      //   padre = this.seleccionarPadreRanking();
-      //   break;
-      // case 'restos':
-      //   padre = this.seleccionarPadreRestos();
-      //   break;
-      // case 'estocastico':
-      //   padre = this.seleccionarPadreEstocastico();
-      //   break;
       default:
         padre = this.seleccionarPadreRuleta();
         break;
@@ -357,15 +290,9 @@ class AlgoritmoGeneticoAsignacion {
       case 'un-punto':
         hijos = this.cruzarUnPunto(padre1, padre2);
         break;
-      // case 'dosPuntos':
-      //   hijos = this.cruzarDosPuntos(padre1, padre2);
-      //   break;
-      // case 'uniforme':
-      //   hijos = this.cruzarUniforme(padre1, padre2);
-      //   break;
-      // default:
-      //   hijos = this.cruzarUnPunto(padre1, padre2);
-      //   break;
+      default:
+        hijos = this.cruzarUnPunto(padre1, padre2);
+        break;
     }
     return hijos;
   }
