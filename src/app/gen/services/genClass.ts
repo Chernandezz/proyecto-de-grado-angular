@@ -23,8 +23,6 @@ class AlgoritmoGenetico {
   public tituloEjecucion!: string;
 
   constructor(agConfig: AlgorithmOptions) {
-    // console.log(agConfig);
-
     this.initializeConfiguration(agConfig);
     this.resultado = this.ejecutar();
   }
