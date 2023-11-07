@@ -3,7 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GeneticService } from '../../services/genetic.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { arrCoeficiente, arrRestriccion } from '../../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
+import {
+  arrCoeficiente,
+  arrRestriccion,
+} from '../../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 interface Formulario {
   arrRestriccion: arrRestriccion[];
@@ -32,6 +35,7 @@ export class FormularioAsignacionComponent {
   public asignacionCoeficientes: boolean = true;
   public asignacionRestricciones: boolean = false;
   public mostrarFormulario: boolean = false;
+  public operadores: string[] = ['<', '>', '<=', '>='];
   public coeficientesArray: arrCoeficiente[] = [
     {
       index: 1,
@@ -46,12 +50,17 @@ export class FormularioAsignacionComponent {
     });
   }
 
-  public restriccionesArray: arrRestriccion[] = [
-    {
-      operador: '<=',
-      value: 0,
-    },
-  ];
+  eliminarCoeficiente(index: number) {
+    this.coeficientesArray.splice(index, 1);
+    // Reindexar los coeficientes restantes
+    this.coeficientesArray.forEach((coef, i) => (coef.index = i + 1));
+  }
+
+  eliminarRestriccion(index: number) {
+    this.restriccionesArray.splice(index, 1);
+  }
+
+  public restriccionesArray: arrRestriccion[] = [];
 
   agregarRestriccion() {
     this.restriccionesArray.push({
