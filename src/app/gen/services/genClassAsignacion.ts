@@ -190,18 +190,18 @@ class AlgoritmoGeneticoAsignacion {
 
         // Este ciclo continúa hasta que se llenen todos los hijos requeridos.
         let hijos = this.cruzar(padre1, padre2);
-        hijos.forEach((hijo) => {
-          if (this.esIndividuoValido(hijo)) {
-            nuevaPoblacion.push(hijo);
-            cantidadHijos--;
-          }
-        });
-
-        // Si después de cruzar y mutar no se obtiene ningún hijo válido, el ciclo intentará nuevamente.
-        // Asegúrate de no tener un bucle infinito verificando que siempre sea posible generar al menos un hijo válido.
+       hijos = hijos.map((hijo) => this.mutar(hijo));
+       hijos.forEach((hijo) => {
+         if (this.esIndividuoValido(hijo)) {
+           if (cantidadHijos > 0) {
+             nuevaPoblacion.push(hijo);
+             cantidadHijos--;
+           }
+         } else {
+           // Si el individuo no es válido, puedes elegir ignorarlo o generar uno nuevo.
+         }
+       });
       }
-
-     
 
       // Actualizar la población con los nuevos hijos válidos
       this.actualizarPoblacion(nuevaPoblacion);
