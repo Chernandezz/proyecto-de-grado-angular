@@ -161,12 +161,15 @@ class AlgoritmoGeneticoAsignacion {
       // Actualizar la población con los nuevos hijos válidos
       this.actualizarPoblacion(nuevaPoblacion);
 
+            
+
       // El resto del código...
       let mejorCromosoma = this.poblacion.reduce(
         (mejor, cromosoma) => (cromosoma.xi > mejor.xi ? cromosoma : mejor),
         this.poblacion[0]
       );
       mejoresCromosomas.push(mejorCromosoma.xi);
+
 
       if (this.convergencia) {
         if (this.verificarConvergencia()) {

@@ -102,7 +102,7 @@ export class FormularioAsignacionComponent {
     elitismo: false,
     convergencia: false,
     numGeneraciones: [1000, [Validators.required, Validators.min(5)]],
-    numIndividuos: [100, [Validators.required, Validators.min(5)]],
+    numIndividuos: [5, [Validators.required]],
     tituloEjecucion: ['', [Validators.required, Validators.maxLength(15)]],
   });
 
