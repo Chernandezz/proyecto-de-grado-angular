@@ -1,28 +1,36 @@
-<div class="container-fluid bg-dark d-flex align-items-center justify-content-center vh-100">
-  <div class="row">
-    <div class="col-md-10 mx-auto">
-      <div class="card p-5 text-center shadow-lg">
-        <h1 class="display-4 text-primary mb-5">Algoritmo Genético</h1>
-        <p class="lead mb-5">Seleccione qué tipo de algoritmo genético desea ejecutar.</p>
-        <div class="row">
-          <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow">
-              <img src="https://pbs.twimg.com/media/EtOBCULXAAAqFL1.jpg" alt="Imagen para función" class="card-img-top">
-              <div class="card-body">
-                <h5 class="card-title">Ejecutar Función</h5>
-                <p class="card-text">Elija esta opción para ejecutar un algoritmo genético en funciones matemáticas.</p>
-                <a [routerLink]="['./formulario']" class="btn btn-primary btn-block mt-4">Iniciar</a>
+<div class="row m-0">
+  <gen-side-bar [showBackButton]="false" class="col-md-3 m-0 p-0 vh-100 overflow-auto"></gen-side-bar>
+  <div class="container-fluid col-md-9 d-flex flex-column h-100 align-items-center">
+    <div class="container">
+      <div class="col-md-10 mx-auto">
+        <div class="card text-center shadow-lg p-5">
+          <h1 class="display-4 text-primary mb-5">Algoritmo Genético</h1>
+          <p class="lead mb-5">Seleccione qué tipo de algoritmo genético desea ejecutar.</p>
+          <div class="row">
+            <div class="col-md-6 mb-4 d-flex">
+              <div class="card h-100 shadow">
+                <img src="https://pbs.twimg.com/media/EtOBCULXAAAqFL1.jpg" alt="Imagen para función"
+                  class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title">Función</h5>
+                  <p class="card-text">Elija esta opción para ejecutar un algoritmo genético en funciones matemáticas.
+                  </p>
+                  <a [routerLink]="['./formulario']" class="btn btn-primary btn-block mt-4">Agregar</a>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card h-100 shadow">
-              <img src="https://www.geogebra.org/resource/mf2Wu8UG/WOlFpOj2fIgiMuAF/material-mf2Wu8UG.png" alt="Imagen para asignación" class="card-img-top">
-              <div class="card-body">
-                <h5 class="card-title">Ejecutar Asignación</h5>
-                <p class="card-text">Opte por esta opción para ejecutar un algoritmo genético en problemas de
-                  asignación.</p>
-                <a [routerLink]="['./formularioAsignacion']" class="btn btn-primary btn-block mt-4">Iniciar</a>
+            <div class="col-md-6 mb-4 d-flex">
+              <div class="card h-100 shadow">
+                <img src="https://www.geogebra.org/resource/mf2Wu8UG/WOlFpOj2fIgiMuAF/material-mf2Wu8UG.png"
+                  alt="Imagen para asignación" class="card-img-top">
+                <div class="card-body">
+                  <h5 class="card-title">Asignación</h5>
+
+                  <p class="card-text">Opte por esta opción para ejecutar un algoritmo genético en problemas de
+                    asignación.</p>
+
+                  <a [routerLink]="['./formularioAsignacion']" class="btn btn-primary btn-block mt-4">Agregar</a>
+                </div>
               </div>
             </div>
           </div>

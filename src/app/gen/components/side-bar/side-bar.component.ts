@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Input } from '@angular/core';
 import { GeneticService } from '../../services/genetic.service';
 import { Subscription } from 'rxjs';
 import { AlgoritmoGenetico } from '../../services/genClass';
@@ -9,6 +9,7 @@ import { AlgoritmoGenetico } from '../../services/genClass';
   styleUrls: ['./side-bar.component.css'],
 })
 export class SideBarComponent implements OnDestroy {
+  @Input() showBackButton: boolean = true;
   public listaTerminados: { tituloEjecucion: string; terminado: boolean }[] =
     [];
   private subscription: Subscription;
@@ -28,5 +29,4 @@ export class SideBarComponent implements OnDestroy {
   limpiarCola() {
     this.gen.limpiarCola();
   }
-
 }

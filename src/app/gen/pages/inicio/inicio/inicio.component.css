@@ -1,20 +1,46 @@
-/* Personaliza los estilos CSS aquí */
-.container {
-  margin-top: 100px;
+/* Estilos globales */
+* {
+  box-sizing: border-box;
 }
 
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Personaliza los estilos CSS aquí */
+.container-fluid {
+  padding: 0;
+}
+
+/* Ajustes para el contenedor principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: 100vh; /* Ajusta esto según la altura de tu barra superior o navbar */
+  overflow-y: auto; /* Permite el scroll interno si el contenido es muy largo */
+}
+
+/* Ajustes para la tarjeta principal */
 .card {
   background-color: #fff;
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 2rem;
+  margin-bottom: 0; /* Elimina el margen inferior */
 }
 
+/* Ajustes para el título de la tarjeta */
 .card-title {
   color: #333;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
+/* Ajustes para los botones personalizados */
 .btn-custom {
   background-color: #ff6b6b;
   color: #fff;
@@ -28,9 +54,42 @@
   background-color: #ff4747;
 }
 
+/* Ajustes para las imágenes de las tarjetas */
 .card-img-top {
-    height: 200px; /* Ajusta según tus necesidades */
-    object-fit: cover; /* Asegura que la imagen cubra el espacio sin estirarse */
-    object-position: center; /* Centra la imagen */
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
 }
 
+/* Asegura que las tarjetas de selección tengan la misma altura */
+.row {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Asegura que el contenido interno de las tarjetas esté espaciado y alineado */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Sidebar */
+.bg-dark {
+  overflow-y: auto;
+}
+
+.vh-100 {
+  height: 100vh;
+  max-height: 100vh;
+}
+
+/* Ajustes para la barra lateral */
+.gen-side-bar {
+  padding: 15px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Resto de los estilos específicos para la barra lateral y otros componentes */
+/* ... */

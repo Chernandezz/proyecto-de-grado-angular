@@ -1,149 +1,154 @@
 <!-- Coeficientes -->
-<div *ngIf="asignacionCoeficientes" class="d-flex justify-content-center">
-  <div class="custom-card">
-    <div class="custom-title">Recolección de Coeficientes</div>
-    <div *ngFor="let coeficiente of coeficientesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
-      <span class="input-group-text w-50 text-center custom-centered">x{{ coeficiente.index }}</span>
-      <input type="number" class="form-control w-50 text-center" [(ngModel)]="coeficiente.value">
-      <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarCoeficiente(i)">
-        <i class="fa-solid fa-trash fa-xs"></i>
-      </button>
-    </div>
-    <div class="d-flex justify-content-between mt-3">
-      <button class="btn btn-success custom-btn" (click)="agregarCoeficiente()"><i class="fa-solid fa-plus"></i> Agregar
-        Coeficiente</button>
-      <button class="btn btn-primary" (click)="navegarARestricciones()">Siguiente <i
-          class="fa-solid fa-arrow-right"></i></button>
-    </div>
-  </div>
-</div>
+<div class="mt-4">
 
-<!-- Restricciones -->
-<div *ngIf="asignacionRestricciones" class="d-flex justify-content-center">
-  <div class="custom-card">
-    <div class="custom-title">Recolección de Restricciones</div>
-    <div *ngFor="let restriccion of restriccionesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
-      <span class="input-group-text w-33 custom-centered">z</span>
-      <select class="form-select text-center w-33" [(ngModel)]="restriccion.operador">
-        <option *ngFor="let option of operadores" [ngValue]="option">{{ option }}</option>
-      </select>
-      <input type="number" class="form-control text-center w-33" [(ngModel)]="restriccion.value">
-      <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarRestriccion(i)">
-        <i class="fa-solid fa-trash fa-xs"></i>
-      </button>
-    </div>
-    <div class="mt-3 d-flex justify-content-between gap-2">
-      <button class="btn btn-danger" (click)="navegarACoeficientes()"><i class="fa-solid fa-arrow-left"></i>
-        Coeficientes</button>
-      <button class="btn btn-success" (click)="agregarRestriccion()"><i class="fa-solid fa-plus"></i> Nueva
-        Restricción</button>
-      <button class="btn btn-primary" (click)="navegarAFormulario()">Siguiente <i
-          class="fa-solid fa-arrow-right"></i></button>
-    </div>
-  </div>
-</div>
-
-
-<!-- Formulario -->
-
-<div *ngIf="mostrarFormulario" class="bg-light p-4 rounded">
-  <h1 class="text-center">Algoritmo Genético - Asignacion</h1>
-  <form id="formulario" class="w-100" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
-    <div class="row">
-      <!-- COLUMNA 1 DEL FORMULARIO -->
-      <div class="col-lg-6">
-        <div class="card mb-4 p-3">
-          <h4 class="card-title mb-3">Configuración</h4>
-          <div class="mb-3">
-            <label class="form-label">Tipo de selección:</label>
-            <select class="form-select" formControlName="tipoSeleccion">
-              <option value="ruleta" selected>Ruleta</option>
-              <option value="torneo" disabled>Torneo</option>
-              <option value="universal" disabled>Universal</option>
-              <option value="ranking" disabled>Ranking</option>
-              <option value="restos" disabled>Restos</option>
-              <option value="estocastico" disabled>Estocastico</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tipo de cruce:</label>
-            <select class="form-select" formControlName="tipoCruce">
-              <option value="un-punto" selected>Un punto</option>
-              <option value="dos-puntos" disabled>Dos puntos</option>
-              <option value="uniforme" disabled>Uniforme</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="tipo-mutacion" class="form-label">Tipo de mutación:</label>
-            <select id="tipo-mutacion" class="form-select" formControlName="tipoMutacion">
-              <option value="bit-flip">Bit flip</option>
-              <option value="intercambio" disabled>Intercambio</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Prob. de cruce:</label> <span>{{
-              formularioInicialAlgoritmo.controls['probCruce'].value }}</span>
-            <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="probCruce">
-
-            <span class="form-text text-danger" *ngIf="isValidField('probCruce')">¡Este campo es requerido!</span>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Prob. de mutación:</label>
-            <span>{{
-              formularioInicialAlgoritmo.controls['probMutacion'].value }}</span>
-            <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="probMutacion">
-
-            <span class="form-text text-danger" *ngIf="isValidField('probMutacion')">¡Este campo es requerido!</span>
-          </div>
-        </div>
+  <div *ngIf="asignacionCoeficientes" class="d-flex justify-content-center">
+    <div class="custom-card">
+      <div class="custom-title">Recolección de Coeficientes</div>
+      <div *ngFor="let coeficiente of coeficientesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
+        <span class="input-group-text w-50 text-center custom-centered">x{{ coeficiente.index }}</span>
+        <input type="number" class="form-control w-50 text-center" [(ngModel)]="coeficiente.value">
+        <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarCoeficiente(i)">
+          <i class="fa-solid fa-trash fa-xs"></i>
+        </button>
       </div>
-
-      <!-- COLUMNA 2 DEL FORMULARIO -->
-      <div class="col-lg-6">
-        <div class="card mb-4 p-3">
-          <h4 class="card-title mb-3">Parámetros</h4>
-
-          <div class="mb-3">
-            <div class="form-check">
-              <label class="form-check-label">Elitismo</label>
-              <input type="checkbox" class="form-check-input" formControlName="elitismo">
-            </div>
-          </div>
-          <div class="mb-3">
-            <div class="form-check">
-              <label class="form-check-label">Detenerse en Convergencia</label>
-              <input type="checkbox" class="form-check-input" formControlName="convergencia">
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Num. de iteraciones:</label>
-            <input type="number" class="form-control" value="1000" formControlName="numGeneraciones">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Tam. de la población:</label>
-            <input type="number" class="form-control" value="7" formControlName="numIndividuos">
-            <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
-              ¡Debe ser mayor a 5!
-            </span>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="d-flex justify-content-between mt-4">
-      <div class="col-lg-4">
-        <label class="form-label">Título de la ejecución:</label>
-        <input type="text" class="form-control" placeholder="Ejemplo: AG 1" formControlName="tituloEjecucion">
-        <span class="form-text text-danger" *ngIf="isValidField('tituloEjecucion')">¡Este campo es requerido!</span>
-      </div>
-      <div class="mt-3 d-flex justify-content-between gap-3">
-        <button class="btn btn-danger" (click)="navegarARestricciones()"><i class="fa-solid fa-arrow-left"></i> Regresar
-          a Restricciones</button>
-        <button type="submit" class="btn btn-success me-2"><i class="fa-solid fa-plus"></i> Agregar a la cola</button>
-        <button (click)="irAResultados()" class="btn btn-primary">Ejecutar <i
+      <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-success custom-btn" (click)="agregarCoeficiente()"><i class="fa-solid fa-plus"></i>
+          Agregar
+          Coeficiente</button>
+        <button class="btn btn-primary" (click)="navegarARestricciones()">Siguiente <i
             class="fa-solid fa-arrow-right"></i></button>
       </div>
     </div>
-  </form>
+  </div>
+
+  <!-- Restricciones -->
+  <div *ngIf="asignacionRestricciones" class="d-flex justify-content-center">
+    <div class="custom-card">
+      <div class="custom-title">Recolección de Restricciones</div>
+      <div *ngFor="let restriccion of restriccionesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
+        <span class="input-group-text w-33 custom-centered">z</span>
+        <select class="form-select text-center w-33" [(ngModel)]="restriccion.operador">
+          <option *ngFor="let option of operadores" [ngValue]="option">{{ option }}</option>
+        </select>
+        <input type="number" class="form-control text-center w-33" [(ngModel)]="restriccion.value">
+        <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarRestriccion(i)">
+          <i class="fa-solid fa-trash fa-xs"></i>
+        </button>
+      </div>
+      <div class="mt-3 d-flex justify-content-between gap-2">
+        <button class="btn btn-danger" (click)="navegarACoeficientes()"><i class="fa-solid fa-arrow-left"></i>
+          Coeficientes</button>
+        <button class="btn btn-success" (click)="agregarRestriccion()"><i class="fa-solid fa-plus"></i> Nueva
+          Restricción</button>
+        <button class="btn btn-primary" (click)="navegarAFormulario()">Siguiente <i
+            class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Formulario -->
+
+  <div *ngIf="mostrarFormulario" class="bg-light p-4 rounded">
+    <h1 class="text-center">Algoritmo Genético - Asignacion</h1>
+    <form id="formulario" class="w-100" [formGroup]="formularioInicialAlgoritmo" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <!-- COLUMNA 1 DEL FORMULARIO -->
+        <div class="col-lg-6">
+          <div class="card mb-4 p-3">
+            <h4 class="card-title mb-3">Configuración</h4>
+            <div class="mb-3">
+              <label class="form-label">Tipo de selección:</label>
+              <select class="form-select" formControlName="tipoSeleccion">
+                <option value="ruleta" selected>Ruleta</option>
+                <option value="torneo" disabled>Torneo</option>
+                <option value="universal" disabled>Universal</option>
+                <option value="ranking" disabled>Ranking</option>
+                <option value="restos" disabled>Restos</option>
+                <option value="estocastico" disabled>Estocastico</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tipo de cruce:</label>
+              <select class="form-select" formControlName="tipoCruce">
+                <option value="un-punto" selected>Un punto</option>
+                <option value="dos-puntos" disabled>Dos puntos</option>
+                <option value="uniforme" disabled>Uniforme</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="tipo-mutacion" class="form-label">Tipo de mutación:</label>
+              <select id="tipo-mutacion" class="form-select" formControlName="tipoMutacion">
+                <option value="bit-flip">Bit flip</option>
+                <option value="intercambio" disabled>Intercambio</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Prob. de cruce:</label> <span>{{
+                formularioInicialAlgoritmo.controls['probCruce'].value }}</span>
+              <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="probCruce">
+
+              <span class="form-text text-danger" *ngIf="isValidField('probCruce')">¡Este campo es requerido!</span>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Prob. de mutación:</label>
+              <span>{{
+                formularioInicialAlgoritmo.controls['probMutacion'].value }}</span>
+              <input type="range" class="form-range" min="0" max="1" step="0.05" formControlName="probMutacion">
+
+              <span class="form-text text-danger" *ngIf="isValidField('probMutacion')">¡Este campo es requerido!</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA 2 DEL FORMULARIO -->
+        <div class="col-lg-6">
+          <div class="card mb-4 p-3">
+            <h4 class="card-title mb-3">Parámetros</h4>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <label class="form-check-label">Elitismo</label>
+                <input type="checkbox" class="form-check-input" formControlName="elitismo">
+              </div>
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <label class="form-check-label">Detenerse en Convergencia</label>
+                <input type="checkbox" class="form-check-input" formControlName="convergencia">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Num. de iteraciones:</label>
+              <input type="number" class="form-control" value="1000" formControlName="numGeneraciones">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tam. de la población:</label>
+              <input type="number" class="form-control" value="7" formControlName="numIndividuos">
+              <span class="form-text text-danger" *ngIf="isValidField('numIndividuos')">
+                ¡Debe ser mayor a 5!
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="col-lg-4">
+          <label class="form-label">Título de la ejecución:</label>
+          <input type="text" class="form-control" placeholder="Ejemplo: AG 1" formControlName="tituloEjecucion">
+          <span class="form-text text-danger" *ngIf="isValidField('tituloEjecucion')">¡Este campo es requerido!</span>
+        </div>
+        <div class="mt-3 d-flex justify-content-between gap-3">
+          <button class="btn btn-danger" (click)="navegarARestricciones()"><i class="fa-solid fa-arrow-left"></i>
+            Regresar
+            a Restricciones</button>
+          <button type="submit" class="btn btn-success me-2"><i class="fa-solid fa-plus"></i> Agregar a la cola</button>
+          <button (click)="irAResultados()" class="btn btn-primary">Ejecutar <i
+              class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
