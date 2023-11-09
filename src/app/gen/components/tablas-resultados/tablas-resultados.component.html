@@ -1,59 +1,117 @@
-<div *ngFor="let item of dataTablas" class="mb-5"> 
-  <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4> 
-  <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
-    final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
+<div *ngFor="let item of dataTablas" class="mb-5">
+  <div *ngIf="item.tipo == 'asignacion'">
+    <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
+    <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
+      final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
 
-  <div class="row">
-    <div class="col-lg-6 mb-4">
-      <h5 class="text-center mb-3">Tabla Inicial</h5>
-      
-      <div class="table-responsive table-limited-height"> 
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Cromosoma</th>
-              <th>Xi</th>
-              <th>Fitness</th>
-              <th>Prob. Acumulada</th>
-              <th>Probabilidad</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of item.resultado.tablaInicial">
-              <td>{{ row.binario }}</td>
-              <td>{{ row.xi }}</td>
-              <td>{{ row.fitness }}</td>
-              <td>{{ row.probabilidadAcumulada }}</td>
-              <td>{{ row.probabilidad }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <h5 class="text-center mb-3">Tabla Inicial</h5>
+
+        <div class="table-responsive table-limited-height">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Cromosoma</th>
+                <th>Fitness</th>
+                <th>Prob. Acumulada</th>
+                <th>Probabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of item.resultado.tablaInicial">
+                <td>{{ row.binario }}</td>
+                <td>{{ row.fitness }}</td>
+                <td>{{ row.probabilidadAcumulada }}</td>
+                <td>{{ row.probabilidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <h5 class="text-center mb-3">Tabla Final</h5>
+        <div class="table-responsive table-limited-height">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Cromosoma</th>
+                <th>Fitness</th>
+                <th>Prob. Acumulada</th>
+                <th>Probabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of item.resultado.tablaFinal">
+                <td>{{ row.binario }}</td>
+                <td>{{ row.fitness }}</td>
+                <td>{{ row.probabilidadAcumulada }}</td>
+                <td>{{ row.probabilidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
+  </div>
+  <div *ngIf="item.tipo === 'funcion'">
+    <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
+    <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
+      final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
 
-    <div class="col-lg-6">
-      <h5 class="text-center mb-3">Tabla Final</h5>
-      <div class="table-responsive table-limited-height">
-        <table class="table table-bordered table-striped">
-          <thead>
-            <tr>
-              <th>Cromosoma</th>
-              <th>Xi</th>
-              <th>Fitness</th>
-              <th>Prob. Acumulada</th>
-              <th>Probabilidad</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let row of item.resultado.tablaFinal">
-              <td>{{ row.binario }}</td>
-              <td>{{ row.xi }}</td>
-              <td>{{ row.fitness }}</td>
-              <td>{{ row.probabilidadAcumulada }}</td>
-              <td>{{ row.probabilidad }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <h5 class="text-center mb-3">Tabla Inicial</h5>
+
+        <div class="table-responsive table-limited-height">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Cromosoma</th>
+                <th>Xi</th>
+                <th>Fitness</th>
+                <th>Prob. Acumulada</th>
+                <th>Probabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of item.resultado.tablaInicial">
+                <td>{{ row.binario }}</td>
+                <td>{{ row.xi }}</td>
+                <td>{{ row.fitness }}</td>
+                <td>{{ row.probabilidadAcumulada }}</td>
+                <td>{{ row.probabilidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <h5 class="text-center mb-3">Tabla Final</h5>
+        <div class="table-responsive table-limited-height">
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Cromosoma</th>
+                <th>Xi</th>
+                <th>Fitness</th>
+                <th>Prob. Acumulada</th>
+                <th>Probabilidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of item.resultado.tablaFinal">
+                <td>{{ row.binario }}</td>
+                <td>{{ row.xi }}</td>
+                <td>{{ row.fitness }}</td>
+                <td>{{ row.probabilidadAcumulada }}</td>
+                <td>{{ row.probabilidad }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

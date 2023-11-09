@@ -56,7 +56,7 @@ class AlgoritmoGeneticoAsignacion {
         cromosoma: [],
         binario: '',
         xi: 0,
-        fitness: 0, // No se usa
+        fitness: 0, 
         probabilidadAcumulada: 0,
         probabilidad: 0,
         fx: 0,
@@ -96,7 +96,7 @@ class AlgoritmoGeneticoAsignacion {
             }
           }
         }
-        individuo.xi = z;
+        individuo.fitness = z;
       }
       poblacionInicial.push(individuo);
     }
@@ -109,12 +109,12 @@ class AlgoritmoGeneticoAsignacion {
   private actualizarProbabilidades(poblacion: Individuo[]) {
     let probabilidadAcumulada = 0;
     let fxTotal = poblacion.reduce(
-      (total, individuo) => total + individuo.xi,
+      (total, individuo) => total + individuo.fitness,
       0
     );
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      poblacion[i].probabilidad = poblacion[i].xi / fxTotal;
+      poblacion[i].probabilidad = poblacion[i].fitness / fxTotal;
       poblacion[i].probabilidadAcumulada =
         probabilidadAcumulada + poblacion[i].probabilidad;
       probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
@@ -132,7 +132,7 @@ class AlgoritmoGeneticoAsignacion {
 
       if (this.elitismo) {
         const mejorIndividuo = this.poblacion.reduce((mejor, individuo) => {
-          return individuo.xi > mejor.xi ? individuo : mejor;
+          return individuo.fitness > mejor.fitness ? individuo : mejor;
         });
         nuevaPoblacion.push(mejorIndividuo);
         cantidadHijos--;
@@ -165,10 +165,11 @@ class AlgoritmoGeneticoAsignacion {
 
       // El resto del código...
       let mejorCromosoma = this.poblacion.reduce(
-        (mejor, cromosoma) => (cromosoma.xi > mejor.xi ? cromosoma : mejor),
+        (mejor, cromosoma) =>
+          cromosoma.fitness > mejor.fitness ? cromosoma : mejor,
         this.poblacion[0]
       );
-      mejoresCromosomas.push(mejorCromosoma.xi);
+      mejoresCromosomas.push(mejorCromosoma.fitness);
 
 
       if (this.convergencia) {
@@ -191,9 +192,9 @@ class AlgoritmoGeneticoAsignacion {
   }
 
   private verificarConvergencia(): boolean {
-    const xiInicial = this.poblacion[0].xi;
+    const xiInicial = this.poblacion[0].fitness;
     for (let i = 1; i < this.tamanoPoblacion; i++) {
-      if (this.poblacion[i].xi !== xiInicial) {
+      if (this.poblacion[i].fitness !== xiInicial) {
         return false;
       }
     }
@@ -214,12 +215,12 @@ class AlgoritmoGeneticoAsignacion {
 
     let probabilidadAcumulada = 0;
     let fxTotal = nuevaPoblacion.reduce(
-      (total, individuo) => total + individuo.xi,
+      (total, individuo) => total + individuo.fitness,
       0
     );
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      nuevaPoblacion[i].probabilidad = nuevaPoblacion[i].xi / fxTotal;
+      nuevaPoblacion[i].probabilidad = nuevaPoblacion[i].fitness / fxTotal;
       nuevaPoblacion[i].probabilidadAcumulada =
         probabilidadAcumulada + nuevaPoblacion[i].probabilidad;
       probabilidadAcumulada = nuevaPoblacion[i].probabilidadAcumulada;
@@ -343,7 +344,7 @@ class AlgoritmoGeneticoAsignacion {
     for (let j = 0; j < this.Lind; j++) {
       z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
     }
-    individuo.xi = z; // Asumiendo que quieres actualizar xi aquí.
+    individuo.fitness = z; // Asumiendo que quieres actualizar xi aquí.
 
     for (let restriccion of this.arrRestriccion) {
       switch (restriccion.operador) {
@@ -368,7 +369,7 @@ class AlgoritmoGeneticoAsignacion {
   private calculoFitnessTotal(): number {
     let xiTotal = 0;
     for (const individuo of this.poblacion) {
-      xiTotal += individuo['xi'];
+      xiTotal += individuo['fitness'];
     }
     return xiTotal;
   }
