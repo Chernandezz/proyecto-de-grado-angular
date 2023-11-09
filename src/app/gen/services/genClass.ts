@@ -15,6 +15,7 @@ class AlgoritmoGenetico {
   public xmin!: number;
   public xmax!: number;
   public n!: number;
+  public tipo!: string;
   public convergencia!: boolean;
   public Lind!: number;
   public elitismo!: boolean;

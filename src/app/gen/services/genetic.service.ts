@@ -3,7 +3,11 @@ import { AlgorithmOptions } from '../interfaces/interfazFormAg';
 import { AlgoritmoGenetico } from './genClass';
 import { BehaviorSubject } from 'rxjs';
 import { AlgoritmoGeneticoAsignacion } from './genClassAsignacion';
-import { AlgorithmOptionsAsignacion, arrCoeficiente, arrRestriccion } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
+import {
+  AlgorithmOptionsAsignacion,
+  arrCoeficiente,
+  arrRestriccion,
+} from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 @Injectable({ providedIn: 'root' })
 export class GeneticService {
@@ -39,7 +43,7 @@ export class GeneticService {
     return [...this.colaAlgoritmos];
   }
 
-  limpiarCola(){
+  limpiarCola() {
     this.colaAlgoritmos = [];
     this.listaTerminados = [];
     this.actualizarColaAlgoritmos();
@@ -114,6 +118,8 @@ export class GeneticService {
         );
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
+          res.data.resultado.tipo = 'asignacion';
+
           this.colaAlgoritmos.push(res.data.resultado);
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();
@@ -147,6 +153,7 @@ export class GeneticService {
         );
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
+          res.data.resultado.tipo = 'funcion';
           this.colaAlgoritmos.push(res.data.resultado);
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();
