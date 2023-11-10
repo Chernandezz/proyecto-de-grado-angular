@@ -4,6 +4,7 @@ import { agFuncionComponent } from './pages/ag-funcion/ag-funcion.component';
 import { GraphicsComponent } from './pages/graphics/graphics.component';
 import { InicioComponent } from './pages/inicio/inicio/inicio.component';
 import { agAsignacionComponent } from './pages/ag-asignacion/ag-asignacion.component';
+import { infoAlgoritmoComponent } from './pages/info-algoritmo/info-algoritmo.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'resultados',
     component: GraphicsComponent,
+  },
+  {
+    path: 'info/:titulo',
+    component: infoAlgoritmoComponent,
   },
   {
     path: '',

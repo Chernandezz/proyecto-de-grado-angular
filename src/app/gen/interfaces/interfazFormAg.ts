@@ -11,6 +11,7 @@ export interface AlgorithmOptions {
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+  tipo: string;
   xMax: number;
   xMin: number;
 }

@@ -1,0 +1,64 @@
+<div class="row m-0">
+  <gen-side-bar class="col m-0 p-0"></gen-side-bar>
+  <div class="col-md-10 col-lg-8 vh-100">
+    <div class="card mt-3">
+      <div class="card-body">
+        <h3 class="card-title">{{ tituloEjecucion }}</h3>
+        <div class="card-text">
+          <div *ngIf="isFuncionTipo(infoAg)">
+            <!-- Acceso a las propiedades del AlgoritmoGenetico -->
+
+            <p>Tipo de Algoritmo: <span class="font-weight-bold">{{ infoAg.tipo }}</span></p>
+            <p>Tamaño de la Población: <span class="font-weight-bold">{{ infoAg.tamanoPoblacion }}</span></p>
+            <p>Tipo de Selección: <span class="font-weight-bold">{{ infoAg.tipoSeleccion }}</span></p>
+            <p>n: <span class="font-weight-bold">{{infoAg.n}}</span></p>
+            <p>Tipo de Cruce: <span class="font-weight-bold">{{ infoAg.tipoCruce }}</span></p>
+            <p>Tipo de Mutacion: <span class="font-weight-bold">{{ infoAg.tipoMutacion }}</span></p>
+            <p>Probabilidad de Cruce: <span class="font-weight-bold">{{ infoAg.probabilidadCruce }}</span></p>
+            <p>Probabilidad de Mutacion: <span class="font-weight-bold">{{ infoAg.probabilidadMutacion }}</span></p>
+            <p>X Minimo: <span class="font-weight-bold">{{ infoAg.xmin }}</span></p>
+            <p>X Maximo: <span class="font-weight-bold">{{ infoAg.xmax }}</span></p>
+            <p>Número de Iteraciones: <span class="font-weight-bold">{{ infoAg.numIteraciones }}</span></p>
+            <p>Lind: <span class="font-weight-bold">{{ infoAg.Lind }}</span></p>
+            <p>Convergencia: <span class="font-weight-bold">{{ infoAg.convergencia ? 'Sí' : 'No' }}</span></p>
+            <p>Elitismo: <span class="font-weight-bold">{{ infoAg.elitismo ? 'Sí' : 'No' }}</span></p>
+
+
+            <!-- ... otras propiedades específicas de AlgoritmoGenetico ... -->
+          </div>
+
+          <!-- Sección para el tipo 'asignacion' -->
+          <div *ngIf="isAsignacionTipo(infoAg)">
+            <div class="mb-3">
+              <h4 class="mb-2">Coeficientes</h4>
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let coef of infoAg.arrCoeficiente">
+                  Index {{ coef.index }}: <span class="font-weight-bold">{{ coef.value }}</span>
+                </li>
+              </ul>
+            </div>
+            <div class="mb-3">
+              <h4 class="mb-2">Restricciones</h4>
+              <ul class="list-group">
+                <li class="list-group-item" *ngFor="let restric of infoAg.arrRestriccion">
+                  {{ restric.operador }} <span class="font-weight-bold">{{ restric.value }}</span>
+                </li>
+              </ul>
+            </div>
+            <p>Tipo de Algoritmo: <span class="font-weight-bold">{{ infoAg.tipo }}</span></p>
+            <p>Tipo de Selección: <span class="font-weight-bold">{{ infoAg.tipoSeleccion }}</span></p>
+            <p>Tamaño de la Población: <span class="font-weight-bold">{{ infoAg.tamanoPoblacion }}</span></p>
+            <p>Tipo de Cruce: <span class="font-weight-bold">{{ infoAg.tipoCruce }}</span></p>
+            <p>Tipo de Mutación: <span class="font-weight-bold">{{ infoAg.tipoMutacion }}</span></p>
+            <p>Probabilidad de Cruce: <span class="font-weight-bold">{{ infoAg.probabilidadCruce }}</span></p>
+            <p>Probabilidad de Mutación: <span class="font-weight-bold">{{ infoAg.probabilidadMutacion }}</span></p>
+            <p>Número de Iteraciones: <span class="font-weight-bold">{{ infoAg.numIteraciones }}</span></p>
+            <p>Lind: <span class="font-weight-bold">{{ infoAg.Lind }}</span></p>
+            <p>Convergencia: <span class="font-weight-bold">{{ infoAg.convergencia ? 'Sí' : 'No' }}</span></p>
+            <p>Elitismo: <span class="font-weight-bold">{{ infoAg.elitismo ? 'Sí' : 'No' }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

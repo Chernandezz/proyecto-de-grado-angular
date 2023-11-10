@@ -19,6 +19,7 @@ class AlgoritmoGeneticoAsignacion {
   public numIteraciones!: number;
   public convergencia!: boolean;
   public Lind!: number;
+  public tipo!: string;
   public elitismo!: boolean;
   public poblacion!: Individuo[];
   public resultado!: ResultadoAlgoritmo;

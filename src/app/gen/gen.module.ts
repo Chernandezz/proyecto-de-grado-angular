@@ -14,6 +14,7 @@ import { InicioComponent } from './pages/inicio/inicio/inicio.component';
 import { FormularioAsignacionComponent } from './components/formulario-asignacion/formulario-asignacion.component';
 import { agAsignacionComponent } from './pages/ag-asignacion/ag-asignacion.component';
 import { TablasResultadosComponent } from './components/tablas-resultados/tablas-resultados.component';
+import { infoAlgoritmoComponent } from './pages/info-algoritmo/info-algoritmo.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { TablasResultadosComponent } from './components/tablas-resultados/tablas
     InicioComponent,
     FormularioAsignacionComponent,
     TablasResultadosComponent,
+    infoAlgoritmoComponent,
   ],
   imports: [
     CommonModule,

@@ -18,6 +18,7 @@ interface Formulario {
   numIndividuos: number;
   xMin: number;
   xMax: number;
+  tipo: string;
   tituloEjecucion: string;
 }
 

@@ -18,6 +18,7 @@ interface Formulario {
   numIndividuos: number;
   probCruce: number;
   probMutacion: number;
+  tipo: string;
   Lind: number;
   tipoCruce: string;
   tipoMutacion: string;

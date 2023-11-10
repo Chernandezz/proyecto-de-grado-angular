@@ -13,7 +13,7 @@
   <!-- Lista de algoritmos terminados -->
   <div class="list-group list-reset">
     <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-      *ngFor="let algoritmo of listaTerminados">
+      *ngFor="let algoritmo of listaTerminados" [routerLink]="['./info/'+algoritmo.tituloEjecucion]">
       <div>
         {{ algoritmo.tituloEjecucion }}
       </div>
