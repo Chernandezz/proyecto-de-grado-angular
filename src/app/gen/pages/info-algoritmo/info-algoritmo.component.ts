@@ -40,16 +40,4 @@ export class infoAlgoritmoComponent implements OnInit {
       }
     });
   }
-
-  isFuncionTipo(
-    infoAg: AlgoritmoGenetico | AlgoritmoGeneticoAsignacion
-  ): infoAg is AlgoritmoGenetico {
-    return infoAg.tipo === 'funcion';
-  }
-
-  isAsignacionTipo(
-    infoAg: AlgoritmoGenetico | AlgoritmoGeneticoAsignacion
-  ): infoAg is AlgoritmoGeneticoAsignacion {
-    return infoAg.tipo === 'asignacion';
-  }
 }

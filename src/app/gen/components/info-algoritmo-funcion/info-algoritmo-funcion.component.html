@@ -1,0 +1,77 @@
+<div class="bg-light p-4 rounded">
+  <h1 class="text-center mb-4">{{info.tituloEjecucion}}</h1>
+  <form id="formulario" class="w-100">
+    <div class="row">
+      <!-- COLUMNA 1 DEL FORMULARIO -->
+      <div class="col-lg-6">
+        <div class="card mb-4 p-3">
+          <h4 class="card-title mb-3">Configuración</h4>
+          <div class="mb-3">
+            <label class="form-label flex-fill">Función objetivo:</label>
+            <input readonly type="text" class="form-control flex-fill" value="fuck">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo de selección:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.tipoSeleccion}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tipo de cruce:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.tipoCruce}}">
+          </div>
+          <div class="mb-3">
+            <label for="tipo-mutacion" class="form-label">Tipo de mutación:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.tipoMutacion}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prob. de cruce:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.probabilidadCruce}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Prob. de mutación:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.probabilidadMutacion}}">
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA 2 DEL FORMULARIO -->
+      <div class="col-lg-6">
+        <div class="card mb-4 p-3">
+          <h4 class="card-title mb-3">Parámetros</h4>
+          <div class="mb-3">
+            <label class="form-label">Decimales:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.n}}">
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <label class="form-check-label">Elitismo</label>
+              <input type="checkbox" class="form-check-input" disabled [checked]="info.elitismo">
+            </div>
+          </div>
+          <div class="mb-3">
+            <div class="form-check">
+              <label class="form-check-label">Detenerse en Convergencia</label>
+              <input type="checkbox" class="form-check-input" disabled [checked]="info.convergencia">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Num. de iteraciones:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.numIteraciones}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tam. de la población:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.tamanoPoblacion}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Xmin:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.xmin}}">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Xmax:</label>
+            <input readonly type="text" class="form-control flex-fill" value="{{info.xmax}}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
