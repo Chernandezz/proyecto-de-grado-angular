@@ -6,7 +6,12 @@
   <hr class="text-white">
   <!-- Botón para limpiar la cola, con estilo mejorado -->
   <div *ngIf="listaTerminados.length > 0" class="text-center my-3">
-    <button class="btn btn-outline-light btn-lg" (click)="limpiarCola()">
+    <!-- Botón para ejecutar -->
+    <button class="btn btn-success btn-lg" (click)="irAResultados()">
+      <i class="fa-solid fa-play"></i> Ejecutar
+    </button>
+    <!-- Botón para limpiar la cola -->
+    <button class="btn btn-outline-light btn-lg m-2" (click)="limpiarCola()">
       <i class="fa-solid fa-broom"></i> Limpiar Cola
     </button>
   </div>

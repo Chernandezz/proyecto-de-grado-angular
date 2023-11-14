@@ -1,7 +1,7 @@
 import { Component, OnDestroy, Input } from '@angular/core';
 import { GeneticService } from '../../services/genetic.service';
 import { Subscription } from 'rxjs';
-import { AlgoritmoGenetico } from '../../services/genClass';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'gen-side-bar',
@@ -13,11 +13,13 @@ export class SideBarComponent implements OnDestroy {
   public listaTerminados: { tituloEjecucion: string; terminado: boolean }[] =
     [];
   private subscription: Subscription;
-  constructor(private gen: GeneticService) {
+  geneticService: any;
+  constructor(private gen: GeneticService, private router: Router) {
     this.subscription = this.gen.getListaTerminados$.subscribe((cola) => {
       this.listaTerminados = cola;
     });
   }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
@@ -28,5 +30,9 @@ export class SideBarComponent implements OnDestroy {
 
   limpiarCola() {
     this.gen.limpiarCola();
+  }
+
+  irAResultados() {
+    this.router.navigate(['/genetico/resultados']);
   }
 }
