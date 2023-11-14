@@ -11,6 +11,5 @@ export class InfoAlgoritmoFuncionComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log(this.info);
   }
 }

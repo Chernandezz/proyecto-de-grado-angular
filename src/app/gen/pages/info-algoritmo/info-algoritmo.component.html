@@ -1,4 +1,18 @@
 <div class="row m-0">
   <gen-side-bar class="col-md-3 m-0 p-0"></gen-side-bar>
-  <gen-info-algoritmo-funcion *ngIf="infoAg.tipo === 'funcion'" [info] = "infoAg" class="col-md-9 vh-100"></gen-info-algoritmo-funcion>
+
+  <!-- Componentes de información del algoritmo -->
+  <gen-info-algoritmo-funcion *ngIf="infoAg?.tipo === 'funcion'" [info]="infoAg"
+    class="col-md-9 vh-100"></gen-info-algoritmo-funcion>
+  <gen-info-algoritmo-asignacion *ngIf="infoAg?.tipo === 'asignacion'" [info]="infoAg"
+    class="col-md-9 vh-100"></gen-info-algoritmo-asignacion>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="!infoAg && errorMensaje" class="col-md-9 vh-100 d-flex justify-content-center align-items-center">
+    <div class="text-center">
+      <p class="alert alert-warning w-75 mx-auto">
+        <i class="fa-solid fa-triangle-exclamation"></i> {{ errorMensaje }}
+      </p>
+    </div>
+  </div>
 </div>

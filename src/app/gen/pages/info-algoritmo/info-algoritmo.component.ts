@@ -1,3 +1,4 @@
+// info-algoritmo.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GeneticService } from '../../services/genetic.service';
@@ -11,8 +12,8 @@ import { AlgoritmoGeneticoAsignacion } from '../../services/genClassAsignacion';
 })
 export class infoAlgoritmoComponent implements OnInit {
   tituloEjecucion!: string;
-  data: (AlgoritmoGenetico | AlgoritmoGeneticoAsignacion)[] = [];
-  infoAg!: AlgoritmoGenetico | AlgoritmoGeneticoAsignacion;
+  infoAg?: AlgoritmoGenetico | AlgoritmoGeneticoAsignacion;
+  errorMensaje?: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,14 +30,27 @@ export class infoAlgoritmoComponent implements OnInit {
   }
 
   retrieveAlgorithmInfo(titulo: string) {
-    this.geneticService.getColaAlgoritmos$.subscribe((algorithms) => {
-      const foundAlgorithm = algorithms.find(
-        (algo) => algo.tituloEjecucion === titulo
+    this.geneticService.getListaTerminados$.subscribe((terminados) => {
+      const estaTerminado = terminados.find(
+        (alg) => alg.tituloEjecucion === titulo && alg.terminado
       );
-      if (foundAlgorithm) {
-        this.infoAg = foundAlgorithm;
+
+      if (estaTerminado) {
+        this.geneticService.getColaAlgoritmos$.subscribe((algorithms) => {
+          const foundAlgorithm = algorithms.find(
+            (algo) => algo.tituloEjecucion === titulo
+          );
+          if (foundAlgorithm) {
+            this.infoAg = foundAlgorithm;
+            this.errorMensaje = undefined;
+          } else {
+            this.errorMensaje = `Información no disponible para el algoritmo ${titulo}.`;
+            this.infoAg = undefined;
+          }
+        });
       } else {
-        console.error(`No se encontró el algoritmo con título ${titulo}`);
+        this.errorMensaje = `El algoritmo ${titulo} aún no ha terminado de ejecutarse`;
+        this.infoAg = undefined;
       }
     });
   }

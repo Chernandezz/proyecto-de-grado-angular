@@ -136,6 +136,8 @@ export class GeneticService {
   }
 
   getFunction(genOptions: AlgorithmOptions) {
+    
+    
     const newVariables = { ...genOptions };
     const tempLoader = {
       tituloEjecucion: newVariables.tituloEjecucion,
@@ -153,7 +155,7 @@ export class GeneticService {
         );
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
-          res.data.resultado.tipo = 'funcion';
+          res.data.resultado.tipo = 'funcion'
           this.colaAlgoritmos.push(res.data.resultado);
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();

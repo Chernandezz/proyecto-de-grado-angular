@@ -1,10 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-info-algoritmo-asignacion',
+  selector: 'gen-info-algoritmo-asignacion',
   templateUrl: './info-algoritmo-asignacion.component.html',
-  styleUrls: ['./info-algoritmo-asignacion.component.css']
+  styleUrls: ['./info-algoritmo-asignacion.component.css'],
 })
-export class InfoAlgoritmoAsignacionComponent {
+export class InfoAlgoritmoAsignacionComponent implements OnInit {
+  @Input() info: any;
 
+  constructor() {}
+
+  ngOnInit() {
+  }
 }

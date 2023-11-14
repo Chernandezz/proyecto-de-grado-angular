@@ -5,6 +5,7 @@ XXXX Poner a funcionar el boton ejecutar XXXX
 
 
 - Opcion de seleccionar un algoritmo y poder editarlo
+- Traer la funcion en el ag de funcion
 
 
 - Historial de ejecuciones (poder almacenar el historial en cache)
