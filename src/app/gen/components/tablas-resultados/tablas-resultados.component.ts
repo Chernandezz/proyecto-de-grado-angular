@@ -10,6 +10,13 @@ import { AlgoritmoGenetico } from '../../services/genClass';
 export class TablasResultadosComponent {
   public dataTablas: AlgoritmoGenetico[] = [];
   constructor(private gen: GeneticService) {}
+  panelAbierto: number | null = null;
+
+  // ... el resto de tu código ...
+
+  togglePanel(i: number): void {
+    this.panelAbierto = this.panelAbierto === i ? null : i;
+  }
 
   ngOnInit(): void {
     this.gen.getColaAlgoritmos$.subscribe((mostrar) => {

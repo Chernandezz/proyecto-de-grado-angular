@@ -1,116 +1,134 @@
-<div *ngFor="let item of dataTablas" class="mb-5">
-  <div *ngIf="item.tipo == 'asignacion'">
-    <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
-    <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
-      final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
-
-    <div class="row">
-      <div class="col-lg-6 mb-4">
-        <h5 class="text-center mb-3">Tabla Inicial</h5>
-
-        <div class="table-responsive table-limited-height">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Cromosoma</th>
-                <th>Fitness</th>
-                <th>Prob. Acumulada</th>
-                <th>Probabilidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of item.resultado.tablaInicial">
-                <td>{{ row.binario }}</td>
-                <td>{{ row.fitness }}</td>
-                <td>{{ row.probabilidadAcumulada }}</td>
-                <td>{{ row.probabilidad }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="col-lg-6">
-        <h5 class="text-center mb-3">Tabla Final</h5>
-        <div class="table-responsive table-limited-height">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Cromosoma</th>
-                <th>Fitness</th>
-                <th>Prob. Acumulada</th>
-                <th>Probabilidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of item.resultado.tablaFinal">
-                <td>{{ row.binario }}</td>
-                <td>{{ row.fitness }}</td>
-                <td>{{ row.probabilidadAcumulada }}</td>
-                <td>{{ row.probabilidad }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+<!-- tablas-resultados.component.html -->
+<div *ngFor="let item of dataTablas; let i = index" class="mb-3">
+  <!-- Encabezado del acordeón para cada algoritmo -->
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center" (click)="togglePanel(i)">
+      <h5 class="mb-0">
+        {{ item.tituloEjecucion }}
+      </h5>
+      <button class="btn">
+        <i class="fas" [class.fa-chevron-down]="panelAbierto !== i" [class.fa-chevron-up]="panelAbierto === i"></i>
+      </button>
     </div>
-  </div>
-  <div *ngIf="item.tipo === 'funcion'">
-    <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
-    <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
-      final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
-
-    <div class="row">
-      <div class="col-lg-6 mb-4">
-        <h5 class="text-center mb-3">Tabla Inicial</h5>
-
-        <div class="table-responsive table-limited-height">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Cromosoma</th>
-                <th>Xi</th>
-                <th>Fitness</th>
-                <th>Prob. Acumulada</th>
-                <th>Probabilidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of item.resultado.tablaInicial">
-                <td>{{ row.binario }}</td>
-                <td>{{ row.xi }}</td>
-                <td>{{ row.fitness }}</td>
-                <td>{{ row.probabilidadAcumulada }}</td>
-                <td>{{ row.probabilidad }}</td>
-              </tr>
-            </tbody>
-          </table>
+    <!-- Contenido plegable del acordeón -->
+    <div *ngIf="panelAbierto === i" class="card-body">
+      <!-- Contenido para 'funcion' -->
+      <div *ngIf="item.tipo === 'funcion'">
+        <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
+        <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
+          final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
+        
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <h5 class="text-center mb-3">Tabla Inicial</h5>
+        
+            <div class="table-responsive table-limited-height">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Cromosoma</th>
+                    <th>Xi</th>
+                    <th>Fitness</th>
+                    <th>Prob. Acumulada</th>
+                    <th>Probabilidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of item.resultado.tablaInicial">
+                    <td>{{ row.binario }}</td>
+                    <td>{{ row.xi }}</td>
+                    <td>{{ row.fitness }}</td>
+                    <td>{{ row.probabilidadAcumulada }}</td>
+                    <td>{{ row.probabilidad }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        
+          <div class="col-lg-6">
+            <h5 class="text-center mb-3">Tabla Final</h5>
+            <div class="table-responsive table-limited-height">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Cromosoma</th>
+                    <th>Xi</th>
+                    <th>Fitness</th>
+                    <th>Prob. Acumulada</th>
+                    <th>Probabilidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of item.resultado.tablaFinal">
+                    <td>{{ row.binario }}</td>
+                    <td>{{ row.xi }}</td>
+                    <td>{{ row.fitness }}</td>
+                    <td>{{ row.probabilidadAcumulada }}</td>
+                    <td>{{ row.probabilidad }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="col-lg-6">
-        <h5 class="text-center mb-3">Tabla Final</h5>
-        <div class="table-responsive table-limited-height">
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th>Cromosoma</th>
-                <th>Xi</th>
-                <th>Fitness</th>
-                <th>Prob. Acumulada</th>
-                <th>Probabilidad</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let row of item.resultado.tablaFinal">
-                <td>{{ row.binario }}</td>
-                <td>{{ row.xi }}</td>
-                <td>{{ row.fitness }}</td>
-                <td>{{ row.probabilidadAcumulada }}</td>
-                <td>{{ row.probabilidad }}</td>
-              </tr>
-            </tbody>
-          </table>
+      <!-- Contenido para 'asignacion' -->
+      <div *ngIf="item.tipo === 'asignacion'">
+        <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
+        <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
+          final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
+        
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <h5 class="text-center mb-3">Tabla Inicial</h5>
+        
+            <div class="table-responsive table-limited-height">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Cromosoma</th>
+                    <th>Fitness</th>
+                    <th>Prob. Acumulada</th>
+                    <th>Probabilidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of item.resultado.tablaInicial">
+                    <td>{{ row.binario }}</td>
+                    <td>{{ row.fitness }}</td>
+                    <td>{{ row.probabilidadAcumulada }}</td>
+                    <td>{{ row.probabilidad }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        
+          <div class="col-lg-6">
+            <h5 class="text-center mb-3">Tabla Final</h5>
+            <div class="table-responsive table-limited-height">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Cromosoma</th>
+                    <th>Fitness</th>
+                    <th>Prob. Acumulada</th>
+                    <th>Probabilidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of item.resultado.tablaFinal">
+                    <td>{{ row.binario }}</td>
+                    <td>{{ row.fitness }}</td>
+                    <td>{{ row.probabilidadAcumulada }}</td>
+                    <td>{{ row.probabilidad }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

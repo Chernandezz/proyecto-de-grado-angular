@@ -1,10 +1,58 @@
-.btn {
-    border-radius: 20px; /* Bordes redondeados */
-    padding: 10px 20px;  /* Espaciado interno más grande */
-    font-weight: 500;    /* Texto en negrita */
-    transition: background-color 0.3s, border-color 0.3s; /* Transición suave al cambiar de color */
+.btn-custom {
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-weight: 500;
+  background-color: #007bff; /* o cualquier otro color que prefieras */
+  color: white;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
 }
 
-.btn:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra al pasar el mouse */
+.btn-regresar {
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-weight: 500;
+  background-color: #dc3545; /* Rojo */
+  color: white;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-regresar:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.container-tablas {
+  max-width: 1000px; /* aumenta la anchura */
+  margin: auto;
+}
+
+/* ... el resto de tu CSS ... */
+
+
+.btn-custom-outline {
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-weight: 500;
+  background-color: transparent;
+  color: #007bff; /* o cualquier otro color que prefieras */
+  border: 2px solid #007bff;
+  transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-custom:hover, .btn-custom-outline:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.card-header {
+  background-color: #f8f9fa; /* un color suave para el fondo */
+  cursor: pointer;
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.table {
+  color: black;
 }

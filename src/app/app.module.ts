@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
