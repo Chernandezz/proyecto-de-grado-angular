@@ -11,3 +11,11 @@
 .table {
   color: black;
 }
+
+/* tablas-resultados.component.css */
+.resultado-optimo {
+  font-size: 1; /* Tamaño de letra más grande */
+  font-weight: bold; /* Texto en negrita */
+  color: rgb(58, 58, 58); /* Color del texto, elige un color que se ajuste a tu diseño */
+  margin-bottom: 20px;
+}

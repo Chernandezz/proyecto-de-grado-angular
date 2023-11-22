@@ -14,9 +14,10 @@
     <div *ngIf="panelAbierto === i" class="card-body">
       <!-- Contenido para 'funcion' -->
       <div *ngIf="item.tipo === 'funcion'">
-        <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
-        <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
-          final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
+        <p class="resultado-optimo">
+          El resultado tras {{ item.resultado.mejoresCromosomas.length }} generaciones más óptimo es xi: {{
+          getOptimalResult(item) }}
+        </p>
         
         <div class="row">
           <div class="col-lg-6 mb-4">
@@ -77,8 +78,10 @@
       <!-- Contenido para 'asignacion' -->
       <div *ngIf="item.tipo === 'asignacion'">
         <h4 class="text-center mb-4">{{ item.tituloEjecucion }}</h4>
-        <small class="text-muted"> (Suma inicial: {{ getTotalFitness(item.resultado.tablaInicial) | number:'1.2-2' }} - Suma
-          final: {{ getTotalFitness(item.resultado.tablaFinal) | number:'1.2-2' }})</small>
+        <p class="resultado-optimo">
+          El resultado tras {{ item.resultado.mejoresCromosomas.length }} generaciones más óptimo es xi: {{
+          getOptimalResult(item) }}
+        </p>
         
         <div class="row">
           <div class="col-lg-6 mb-4">
