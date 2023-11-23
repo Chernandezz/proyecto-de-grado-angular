@@ -1,0 +1,27 @@
+@media (min-width: 992px) {
+  .form-label {
+    margin-right: 10px;
+  }
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+/* Asegúrate de que las etiquetas y los inputs se alineen correctamente */
+.form-label,
+.form-control {
+  width: 100%;
+}
+
+/* Ajusta los márgenes y el padding según tus necesidades */
+.card {
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+/* Estilos adicionales si es necesario */
+.scrollable-area {
+  max-height: 300px; /* Altura máxima antes de mostrar scroll */
+  overflow-y: auto;
+}
