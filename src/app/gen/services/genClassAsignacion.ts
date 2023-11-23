@@ -1,5 +1,5 @@
 import * as math from 'mathjs';
-import { Individuo } from '../interfaces/Individuo';
+import { Individuo } from '../interfaces/interfaz-ag-asignacion/IndividuoAsignacion';
 import { ResultadoAlgoritmo } from '../interfaces/Resultado';
 import {
   AlgorithmOptionsAsignacion,
@@ -8,22 +8,26 @@ import {
 } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 class AlgoritmoGeneticoAsignacion {
-  public tipoSeleccion!: string;
   public arrCoeficiente!: arrCoeficiente[];
   public arrRestriccion!: arrRestriccion[];
+  public tipoSeleccion!: string;
   public tamanoPoblacion!: number;
   public tipoCruce!: string;
   public tipoMutacion!: string;
   public probabilidadCruce!: number;
   public probabilidadMutacion!: number;
   public numIteraciones!: number;
+  public xMin!: number;
+  public xMax!: number;
+  public n!: number;
+  public tipo!: string;
   public convergencia!: boolean;
   public Lind!: number;
-  public tipo!: string;
   public elitismo!: boolean;
   public poblacion!: Individuo[];
   public resultado!: ResultadoAlgoritmo;
   public tituloEjecucion!: string;
+  public LindTotal!: number;
 
   constructor(agConfig: AlgorithmOptionsAsignacion) {
     this.initializeConfiguration(agConfig);
@@ -33,19 +37,70 @@ class AlgoritmoGeneticoAsignacion {
   private initializeConfiguration(agConfig: AlgorithmOptionsAsignacion) {
     this.arrCoeficiente = agConfig.arrCoeficiente;
     this.arrRestriccion = agConfig.arrRestriccion;
+
+    this.n = agConfig.numDecimales;
     this.tipoSeleccion = agConfig.tipoSeleccion;
     this.tamanoPoblacion = agConfig.numIndividuos;
     this.tipoCruce = agConfig.tipoCruce;
-    this.arrCoeficiente = agConfig.arrCoeficiente;
-    this.arrRestriccion = agConfig.arrRestriccion;
     this.tipoMutacion = agConfig.tipoMutacion;
     this.probabilidadCruce = agConfig.probCruce;
-    this.Lind = this.arrCoeficiente.length;
+    this.probabilidadMutacion = agConfig.probMutacion;
     this.numIteraciones = agConfig.numGeneraciones;
+    this.xMin = agConfig.xMin;
+    this.xMax = agConfig.xMax;
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;
+    this.calculateLindValue();
     this.poblacion = this.generarPoblacionInicial();
     this.tituloEjecucion = agConfig.tituloEjecucion;
+  }
+
+  private calculateLindValue(): void {
+    /* Lo que se hace es sacar la cantidad de bits necesarios para representar el número más grande posible en el rango de valores, teniendo en cuenta la cantidad de decimales que selecciono el usuario y ya con el Lind, total se multiplica por la cantidad de variables que se tienen.
+
+    Ej: xMin = 0, xMax = 5, n = 2, cantidad de variables = 3
+    Lind = log2(1 + (xMax - xMin) * 10^n) * cantidad de variables
+    Lind = log2(1 + (5 - 0) * 10^2) * 3 = log2(501) * 3 = ceil(8.96) * 3 = 27 bits
+    */
+
+    this.Lind = Math.ceil(
+      Math.log2(1 + (this.xMax - this.xMin) * Math.pow(10, this.n))
+    );
+    this.LindTotal = this.Lind * this.arrCoeficiente.length;
+  }
+
+  private generarIndividuo(): Individuo {
+    let individuo: Individuo = {
+      cromosoma: [],
+      binario: '',
+      xi: 0,
+      fitness: 0,
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+      fx: 0,
+    };
+
+    // Se crea el valor de xi en base 
+    // Aqui basicamente se tiene el for siguiente para recorrer la cantidad de variables que haya, por ejemplo si hay 5 variables xi, para eso esta el for de i, despues como cada variable tiene su valor de Lind, se recorre con el for de k, y se agrega el valor de xi en el cromosoma, entonces es como construir el cromosoma de cada individuo con sus valores de xi
+    // el for de k basicamente construye el obj y el for de i es el que itera que se construya x1,x2,x3 etc
+    for(let i = 0; i < this.arrCoeficiente.length; i++) {
+      const xi = [];
+      for (let k = 0; k < this.Lind; k++) {
+        xi.push(Math.random() * (this.xMax - this.xMin) + this.xMin);
+      }
+      individuo.cromosoma.push(xi);
+    }
+    
+    // se agrega el valor de xi en el cromosoma
+    
+
+    // Calculo de Z/
+    let z = 0;
+    for (let j = 0; j < this.Lind; j++) {
+      z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
+    }
+
+    return individuo;
   }
 
   private generarPoblacionInicial(): Individuo[] {
@@ -53,52 +108,20 @@ class AlgoritmoGeneticoAsignacion {
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
       let valido = false;
-      const individuo: Individuo = {
-        cromosoma: [],
-        binario: '',
-        xi: 0,
-        fitness: 0, 
-        probabilidadAcumulada: 0,
-        probabilidad: 0,
-        fx: 0,
-      };
-      while (valido === false) {
-        valido = true;
-        const cromosoma = [];
-        for (let k = 0; k < this.Lind; k++) {
-          cromosoma.push(Math.random() < 0.5 ? 0 : 1);
-        }
-        individuo.cromosoma = [...cromosoma];
-        individuo.binario = cromosoma.join('');
+      let individuo: Individuo;
+      do {
+        individuo = this.generarIndividuo();
+        valido = this.esIndividuoValido(individuo);
+      } while (valido === false);
 
-        // Calculo de Z/
-        let z = 0;
-        for (let j = 0; j < this.Lind; j++) {
-          z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-        }
-        // Verificar restricciones
-        for (let restriccion of this.arrRestriccion) {
-          if (valido) {
-            switch (restriccion.operador) {
-              case '<=':
-                valido = z > restriccion.value ? false : true;
-                break;
-              case '>=':
-                valido = z < restriccion.value ? false : true;
-                break;
-              case '>':
-                valido = z <= restriccion.value ? false : true;
-                break;
-              case '<':
-                valido = z >= restriccion.value ? false : true;
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        individuo.fitness = z;
+      
+      // Se calcula el fitness del individuo
+      let z = 0;
+      for (let j = 0; j < this.Lind; j++) {
+        z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
       }
+      individuo.fitness = z;
+      
       poblacionInicial.push(individuo);
     }
 
@@ -162,8 +185,6 @@ class AlgoritmoGeneticoAsignacion {
       // Actualizar la población con los nuevos hijos válidos
       this.actualizarPoblacion(nuevaPoblacion);
 
-            
-
       // El resto del código...
       let mejorCromosoma = this.poblacion.reduce(
         (mejor, cromosoma) =>
@@ -171,7 +192,6 @@ class AlgoritmoGeneticoAsignacion {
         this.poblacion[0]
       );
       mejoresCromosomas.push(mejorCromosoma.fitness);
-
 
       if (this.convergencia) {
         if (this.verificarConvergencia()) {
@@ -239,14 +259,19 @@ class AlgoritmoGeneticoAsignacion {
   }
 
   private mutarBitflip(individuo: Individuo) {
-    // Método de mutación bit-flip
-    // Crear una copia del objeto individuo antes de modificarlo
+    // Método de mutación ajustado
     const individuoMutado = JSON.parse(JSON.stringify(individuo));
+    const rangoTotal = this.xMax - this.xMin;
 
     for (let i = 0; i < this.Lind; i++) {
       if (Math.random() < this.probabilidadMutacion) {
-        individuoMutado.cromosoma[i] =
-          individuoMutado.cromosoma[i] === 0 ? 1 : 0;
+        // Mutar basado en una fracción del rango total
+        let cambio =
+          (Math.random() - 0.5) * 2 * this.probabilidadMutacion * rangoTotal;
+        individuoMutado.cromosoma[i] = Math.min(
+          this.xMax,
+          Math.max(this.xMin, individuoMutado.cromosoma[i] + cambio)
+        );
       }
     }
     return individuoMutado;

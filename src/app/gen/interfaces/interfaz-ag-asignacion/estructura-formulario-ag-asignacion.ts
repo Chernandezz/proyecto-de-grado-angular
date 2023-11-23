@@ -14,6 +14,8 @@ export interface AlgorithmOptionsAsignacion {
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+  xMax: number;
+  xMin: number;
 }
 
 export interface arrCoeficiente {

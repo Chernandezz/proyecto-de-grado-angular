@@ -24,6 +24,8 @@ interface Formulario {
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+  xMax: number;
+  xMin: number;
 }
 
 @Component({
@@ -105,6 +107,8 @@ export class FormularioAsignacionComponent {
     numGeneraciones: [1000, [Validators.required, Validators.min(5)]],
     numIndividuos: [5, [Validators.required]],
     tituloEjecucion: ['', [Validators.required, Validators.maxLength(15)]],
+    xMin: [0],
+    xMax: [10],
   });
 
   isValidField(field: string): boolean {

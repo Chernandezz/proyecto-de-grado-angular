@@ -106,6 +106,7 @@ export class GeneticService {
       tituloEjecucion: newVariables.tituloEjecucion,
       terminado: false,
     };
+    
 
     this.listaTerminados.push(tempLoader);
     this.actualizarListaTerminados();
