@@ -1,41 +1,56 @@
 <!-- Coeficientes -->
 <div class="mt-4">
 
-  <div *ngIf="asignacionCoeficientes" class="d-flex justify-content-center">
-    <div class="custom-card">
-      <div class="custom-title">Recolección de Coeficientes</div>
-      <div *ngFor="let coeficiente of coeficientesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
-        <span class="input-group-text w-50 text-center custom-centered">x{{ coeficiente.index }}</span>
-        <input type="number" class="form-control w-50 text-center" [(ngModel)]="coeficiente.value">
-        <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarCoeficiente(i)">
-          <i class="fa-solid fa-trash fa-xs"></i>
-        </button>
+<div *ngIf="asignacionCoeficientes" class="d-flex justify-content-center">
+  <div class="custom-card">
+    <div class="custom-title">Recolección de Coeficientes</div>
+    <div *ngFor="let coeficiente of coeficientesArray; let i = index" class="coeficiente-row">
+      <span class="input-group-text custom-coeficiente-label">x{{ coeficiente.index }}</span>
+      <input type="number" class="form-control custom-input" [(ngModel)]="coeficiente.value">
+      <div class="rango-inputs">
+        <label class="rango-label">xMin:</label>
+        <input type="number" class="form-control custom-rango-input" [(ngModel)]="coeficiente.xMin">
+        <label class="rango-label">xMax:</label>
+        <input type="number" class="form-control custom-rango-input" [(ngModel)]="coeficiente.xMax">
       </div>
-      <div class="d-flex justify-content-between mt-3">
-        <button class="btn btn-success custom-btn" (click)="agregarCoeficiente()"><i class="fa-solid fa-plus"></i>
-          Agregar
-          Coeficiente</button>
-        <button class="btn btn-primary" (click)="navegarARestricciones()">Siguiente <i
-            class="fa-solid fa-arrow-right"></i></button>
-      </div>
+      <button class="btn btn-outline-danger btn-sm custom-delete-btn" (click)="eliminarCoeficiente(i)">
+        <i class="fa-solid fa-trash fa-xs"></i>
+      </button>
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-success custom-btn" (click)="agregarCoeficiente()"><i class="fa-solid fa-plus"></i> Agregar
+        Coeficiente</button>
+      <button class="btn btn-primary" (click)="navegarARestricciones()">Siguiente <i
+          class="fa-solid fa-arrow-right"></i></button>
     </div>
   </div>
+</div>
+
+
+
+
 
   <!-- Restricciones -->
   <div *ngIf="asignacionRestricciones" class="d-flex justify-content-center">
     <div class="custom-card">
       <div class="custom-title">Recolección de Restricciones</div>
-      <div *ngFor="let restriccion of restriccionesArray; let i = index" class="d-flex align-items-center mb-3 gap-1">
-        <span class="input-group-text w-33 custom-centered">z</span>
-        <select class="form-select text-center w-33" [(ngModel)]="restriccion.operador">
-          <option *ngFor="let option of operadores" [ngValue]="option">{{ option }}</option>
-        </select>
-        <input type="number" class="form-control text-center w-33" [(ngModel)]="restriccion.value">
-        <button class="btn btn-outline-danger btn-sm ml-2" (click)="eliminarRestriccion(i)">
-          <i class="fa-solid fa-trash fa-xs"></i>
-        </button>
+      <div *ngFor="let restriccion of restriccionesArray; let i = index" class="mb-3">
+        <div *ngFor="let coef of coeficientesArray; let j = index" class="d-flex align-items-center gap-1">
+          <input type="number" class="form-control" placeholder="{{ 'Coeficiente x' + (j + 1) }}"
+            [(ngModel)]="restriccion.coeficientes[j]">
+          <span class="mx-2">x{{ j + 1 }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-1">
+          <select class="form-select" [(ngModel)]="restriccion.operador">
+            <option *ngFor="let option of operadores" [ngValue]="option">{{ option }}</option>
+          </select>
+          <input type="number" class="form-control" [(ngModel)]="restriccion.value">
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminarRestriccion(i)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
       </div>
-      <div class="mt-3 d-flex justify-content-between gap-2">
+      <div class="mt-3 d-flex justify-content-between gap-3">
         <button class="btn btn-danger" (click)="navegarACoeficientes()"><i class="fa-solid fa-arrow-left"></i>
           Coeficientes</button>
         <button class="btn btn-success" (click)="agregarRestriccion()"><i class="fa-solid fa-plus"></i> Nueva
@@ -113,6 +128,13 @@
               </div>
             </div>
             <div class="mb-3">
+              <label class="form-label">Decimales:</label>
+              <span>{{ formularioInicialAlgoritmo.controls['numDecimales'].value }}</span>
+              <input type="range" class="form-range" min="0" max="10" step="1" formControlName="numDecimales">
+
+              <span class="form-text text-danger" *ngIf="isValidField('numDecimales')">¡Este campo es requerido!</span>
+            </div>
+            <div class="mb-3">
               <div class="form-check">
                 <label class="form-check-label">Detenerse en Convergencia</label>
                 <input type="checkbox" class="form-check-input" formControlName="convergencia">
@@ -126,15 +148,6 @@
               <label class="form-label">Tam. de la población:</label>
               <input type="number" class="form-control" value="7" formControlName="numIndividuos">
             </div>
-            <div class="mb-3">
-              <label class="form-label">Xmin:</label>
-              <input type="number" class="form-control" value="0" formControlName="xMin">
-            </div>
-            <div class="mb-3">
-              <label class="form-label">Xmax:</label>
-              <input type="number" class="form-control" value="10" formControlName="xMax">
-            </div>
-
           </div>
         </div>
       </div>

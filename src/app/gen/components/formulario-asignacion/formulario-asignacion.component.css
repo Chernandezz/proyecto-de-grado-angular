@@ -10,6 +10,39 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.coeficiente-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.custom-coeficiente-label {
+  width: auto;
+  text-align: center;
+}
+
+
+.custom-input, .custom-rango-input {
+  flex: 1;
+}
+
+.rango-inputs {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.rango-label {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.custom-delete-btn {
+  margin-left: 10px;
+}
+
 .custom-title {
   font-size: 18px;
   font-weight: 600;
