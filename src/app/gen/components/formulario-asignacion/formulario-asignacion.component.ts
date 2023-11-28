@@ -28,6 +28,7 @@ interface Formulario {
   xMin: number;
 }
 
+
 @Component({
   selector: 'gen-formulario-asignacion',
   templateUrl: './formulario-asignacion.component.html',
@@ -43,6 +44,9 @@ export class FormularioAsignacionComponent {
     {
       index: 1,
       value: 0,
+      Lind: 10, // Valor predeterminado o según tus requerimientos
+      xMin: 0, // Valor mínimo inicial
+      xMax: 10, // Valor máximo inicial
     },
   ];
 
@@ -50,6 +54,9 @@ export class FormularioAsignacionComponent {
     this.coeficientesArray.push({
       index: this.coeficientesArray.length + 1,
       value: 0,
+      Lind: 10, // Valor predeterminado o según tus requerimientos
+      xMin: 0, // Valor mínimo inicial
+      xMax: 10, // Valor máximo inicial
     });
   }
 
@@ -67,6 +74,7 @@ export class FormularioAsignacionComponent {
 
   agregarRestriccion() {
     this.restriccionesArray.push({
+      coeficientes: new Array(this.coeficientesArray.length).fill(0),
       operador: '<=',
       value: 0,
     });
@@ -102,6 +110,7 @@ export class FormularioAsignacionComponent {
       0.1,
       [Validators.required, Validators.min(0), Validators.max(1)],
     ],
+    numDecimales: [2, Validators.min(0)],
     elitismo: false,
     convergencia: false,
     numGeneraciones: [1000, [Validators.required, Validators.min(5)]],

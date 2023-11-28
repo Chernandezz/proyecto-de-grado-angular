@@ -128,11 +128,9 @@
               </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Decimales:</label>
+              <label class="form-label">Decimales: </label>
               <span>{{ formularioInicialAlgoritmo.controls['numDecimales'].value }}</span>
               <input type="range" class="form-range" min="0" max="10" step="1" formControlName="numDecimales">
-
-              <span class="form-text text-danger" *ngIf="isValidField('numDecimales')">¡Este campo es requerido!</span>
             </div>
             <div class="mb-3">
               <div class="form-check">

@@ -1,6 +1,6 @@
-import * as math from 'mathjs';
+import { log, log2 } from 'mathjs';
 import { Individuo } from '../interfaces/interfaz-ag-asignacion/IndividuoAsignacion';
-import { ResultadoAlgoritmo } from '../interfaces/Resultado';
+import { ResultadoAlgoritmo } from '../interfaces/interfaz-ag-asignacion/Resultado-ag-asginacion';
 import {
   AlgorithmOptionsAsignacion,
   arrCoeficiente,
@@ -8,26 +8,22 @@ import {
 } from '../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
 
 class AlgoritmoGeneticoAsignacion {
+  public tipoSeleccion!: string;
   public arrCoeficiente!: arrCoeficiente[];
   public arrRestriccion!: arrRestriccion[];
-  public tipoSeleccion!: string;
   public tamanoPoblacion!: number;
   public tipoCruce!: string;
   public tipoMutacion!: string;
   public probabilidadCruce!: number;
   public probabilidadMutacion!: number;
   public numIteraciones!: number;
-  public xMin!: number;
-  public xMax!: number;
-  public n!: number;
-  public tipo!: string;
   public convergencia!: boolean;
-  public Lind!: number;
+  public tipo!: string;
+  public numDecimales!: number;
   public elitismo!: boolean;
   public poblacion!: Individuo[];
   public resultado!: ResultadoAlgoritmo;
   public tituloEjecucion!: string;
-  public LindTotal!: number;
 
   constructor(agConfig: AlgorithmOptionsAsignacion) {
     this.initializeConfiguration(agConfig);
@@ -36,98 +32,124 @@ class AlgoritmoGeneticoAsignacion {
 
   private initializeConfiguration(agConfig: AlgorithmOptionsAsignacion) {
     this.arrCoeficiente = agConfig.arrCoeficiente;
-    this.arrRestriccion = agConfig.arrRestriccion;
-
-    this.n = agConfig.numDecimales;
+    this.numDecimales = agConfig.numDecimales;
+    this.probabilidadMutacion = agConfig.probMutacion;
+    this.arrRestriccion = agConfig.arrRestriccion.map((restriccion) => ({
+      ...restriccion,
+      coeficientes:
+        restriccion.coeficientes ||
+        new Array(this.arrCoeficiente.length).fill(0),
+    }));
     this.tipoSeleccion = agConfig.tipoSeleccion;
+
     this.tamanoPoblacion = agConfig.numIndividuos;
     this.tipoCruce = agConfig.tipoCruce;
     this.tipoMutacion = agConfig.tipoMutacion;
     this.probabilidadCruce = agConfig.probCruce;
-    this.probabilidadMutacion = agConfig.probMutacion;
     this.numIteraciones = agConfig.numGeneraciones;
-    this.xMin = agConfig.xMin;
-    this.xMax = agConfig.xMax;
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;
-    this.calculateLindValue();
     this.poblacion = this.generarPoblacionInicial();
     this.tituloEjecucion = agConfig.tituloEjecucion;
-  }
-
-  private calculateLindValue(): void {
-    /* Lo que se hace es sacar la cantidad de bits necesarios para representar el número más grande posible en el rango de valores, teniendo en cuenta la cantidad de decimales que selecciono el usuario y ya con el Lind, total se multiplica por la cantidad de variables que se tienen.
-
-    Ej: xMin = 0, xMax = 5, n = 2, cantidad de variables = 3
-    Lind = log2(1 + (xMax - xMin) * 10^n) * cantidad de variables
-    Lind = log2(1 + (5 - 0) * 10^2) * 3 = log2(501) * 3 = ceil(8.96) * 3 = 27 bits
-    */
-
-    this.Lind = Math.ceil(
-      Math.log2(1 + (this.xMax - this.xMin) * Math.pow(10, this.n))
-    );
-    this.LindTotal = this.Lind * this.arrCoeficiente.length;
-  }
-
-  private generarIndividuo(): Individuo {
-    let individuo: Individuo = {
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      fx: 0,
-    };
-
-    // Se crea el valor de xi en base 
-    // Aqui basicamente se tiene el for siguiente para recorrer la cantidad de variables que haya, por ejemplo si hay 5 variables xi, para eso esta el for de i, despues como cada variable tiene su valor de Lind, se recorre con el for de k, y se agrega el valor de xi en el cromosoma, entonces es como construir el cromosoma de cada individuo con sus valores de xi
-    // el for de k basicamente construye el obj y el for de i es el que itera que se construya x1,x2,x3 etc
-    for(let i = 0; i < this.arrCoeficiente.length; i++) {
-      const xi = [];
-      for (let k = 0; k < this.Lind; k++) {
-        xi.push(Math.random() * (this.xMax - this.xMin) + this.xMin);
-      }
-      individuo.cromosoma.push(xi);
-    }
-    
-    // se agrega el valor de xi en el cromosoma
-    
-
-    // Calculo de Z/
-    let z = 0;
-    for (let j = 0; j < this.Lind; j++) {
-      z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-    }
-
-    return individuo;
   }
 
   private generarPoblacionInicial(): Individuo[] {
     const poblacionInicial: Individuo[] = [];
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      let valido = false;
-      let individuo: Individuo;
-      do {
-        individuo = this.generarIndividuo();
-        valido = this.esIndividuoValido(individuo);
-      } while (valido === false);
+      let individuo: Individuo = this.crearIndividuo();
 
-      
-      // Se calcula el fitness del individuo
-      let z = 0;
-      for (let j = 0; j < this.Lind; j++) {
-        z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
+      // Verificar restricciones hasta que el individuo sea válido
+      while (!this.esIndividuoValido(individuo)) {
+        individuo = this.crearIndividuo();
       }
-      individuo.fitness = z;
-      
+
       poblacionInicial.push(individuo);
     }
 
     this.actualizarProbabilidades(poblacionInicial);
-
     return poblacionInicial;
+  }
+
+  private crearIndividuo(): Individuo {
+    // Crear cromosomas basados en Lind para cada coeficiente
+    const cromosomas = this.arrCoeficiente.map((coef) => {
+      const Lind = Math.ceil(
+        log2(1 + (coef.xMax - coef.xMin) * Math.pow(10, this.numDecimales))
+      );
+      return Array.from({ length: Lind }, () => (Math.random() < 0.5 ? 0 : 1));
+    });
+
+    // Concatenar todos los cromosomas para crear la representación binaria
+    const binario = cromosomas.map((cromosoma) => cromosoma.join('')).join('');
+
+    // Calcular fitness y xi
+    const { fitness, xi } = this.calcularFitnessXi(cromosomas);
+
+    const valoresDecimalesXi = cromosomas.map((cromosoma, index) => {
+      return this.binarioADecimal(cromosoma, this.arrCoeficiente[index]);
+    });
+
+    return {
+      cromosomas: cromosomas,
+      binario: binario,
+      xi: xi,
+      fitness: fitness,
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+      fx: 0,
+      valoresDecimalesXi: valoresDecimalesXi,
+    };
+  }
+
+  private binarioADecimal(cromosoma: number[], coef: arrCoeficiente): number {
+    const valorBinario = parseInt(cromosoma.join(''), 2);
+    const rango = Math.pow(2, coef.Lind) - 1;
+    return coef.xMin + (valorBinario / rango) * (coef.xMax - coef.xMin);
+  }
+
+  private calcularFitnessXi(cromosomas: number[][]): {
+    fitness: number;
+    xi: number;
+  } {
+    let z = 0;
+    let xi = 0; // Asumiendo que xi es algún tipo de valor calculado
+
+    for (let j = 0; j < this.arrCoeficiente.length; j++) {
+      const valorCromosoma = parseInt(cromosomas[j].join(''), 2); // Convertir cromosoma a número
+      z += valorCromosoma * this.arrCoeficiente[j].value;
+      // Calcular xi si es necesario
+    }
+
+    return { fitness: z, xi: xi };
+  }
+
+  private esIndividuoValido(individuo: Individuo): boolean {
+    for (let restriccion of this.arrRestriccion) {
+      if (!this.cumpleRestriccion(individuo, restriccion)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private cumpleRestriccion(
+    individuo: Individuo,
+    restriccion: arrRestriccion
+  ): boolean {
+    const z = individuo.fitness; // o calcular z si es necesario
+    switch (restriccion.operador) {
+      case '<=':
+        return z <= restriccion.value;
+      case '>=':
+        return z >= restriccion.value;
+      case '>':
+        return z > restriccion.value;
+      case '<':
+        return z < restriccion.value;
+      default:
+        return true; // Manejar operadores desconocidos
+    }
   }
 
   private actualizarProbabilidades(poblacion: Individuo[]) {
@@ -142,6 +164,15 @@ class AlgoritmoGeneticoAsignacion {
       poblacion[i].probabilidadAcumulada =
         probabilidadAcumulada + poblacion[i].probabilidad;
       probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
+    }
+  }
+
+  private mutar(individuo: Individuo): Individuo {
+    switch (this.tipoMutacion) {
+      case 'bit-flip':
+        return this.mutarBitflip(individuo);
+      default:
+        return individuo;
     }
   }
 
@@ -184,11 +215,9 @@ class AlgoritmoGeneticoAsignacion {
 
       // Actualizar la población con los nuevos hijos válidos
       this.actualizarPoblacion(nuevaPoblacion);
-
-      // El resto del código...
       let mejorCromosoma = this.poblacion.reduce(
-        (mejor, cromosoma) =>
-          cromosoma.fitness > mejor.fitness ? cromosoma : mejor,
+        (mejor, cromosomas) =>
+          cromosomas.fitness > mejor.fitness ? cromosomas : mejor,
         this.poblacion[0]
       );
       mejoresCromosomas.push(mejorCromosoma.fitness);
@@ -222,58 +251,54 @@ class AlgoritmoGeneticoAsignacion {
     return true;
   }
 
+  private aplanarCromosomas(cromosomas: number[][]): number[] {
+    return cromosomas.reduce(
+      (acumulado, actual) => acumulado.concat(actual),
+      []
+    );
+  }
+
   private actualizarPoblacion(nuevaPoblacion: Individuo[]) {
-    for (const individuo of nuevaPoblacion) {
-      individuo['binario'] = individuo.cromosoma.join('');
-
-      // Calculo de Z/
-      let z = 0;
-      for (let j = 0; j < this.Lind; j++) {
-        z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-      }
-      individuo.xi = z;
-    }
-
-    let probabilidadAcumulada = 0;
     let fxTotal = nuevaPoblacion.reduce(
       (total, individuo) => total + individuo.fitness,
       0
     );
 
-    for (let i = 0; i < this.tamanoPoblacion; i++) {
-      nuevaPoblacion[i].probabilidad = nuevaPoblacion[i].fitness / fxTotal;
-      nuevaPoblacion[i].probabilidadAcumulada =
-        probabilidadAcumulada + nuevaPoblacion[i].probabilidad;
-      probabilidadAcumulada = nuevaPoblacion[i].probabilidadAcumulada;
-    }
+    nuevaPoblacion.forEach((individuo, index) => {
+      // Actualizar la representación binaria y el fitness
+
+      individuo.binario = this.aplanarCromosomas(individuo.cromosomas).join('');
+      const { fitness } = this.calcularFitnessXi(individuo.cromosomas);
+      individuo.fitness = fitness;
+
+      // Calcular probabilidad y probabilidad acumulada
+      individuo.probabilidad = individuo.fitness / fxTotal;
+      individuo.probabilidadAcumulada =
+        index === 0
+          ? individuo.probabilidad
+          : nuevaPoblacion[index - 1].probabilidadAcumulada +
+            individuo.probabilidad;
+    });
+
     this.poblacion = [...nuevaPoblacion];
   }
 
-  private mutar(individuo: Individuo) {
-    switch (this.tipoMutacion) {
-      case 'bit-flip':
-        individuo = this.mutarBitflip(individuo);
-        break;
-    }
-    return individuo;
-  }
+  private mutarBitflip(individuo: Individuo): Individuo {
+    // Crear una copia del objeto individuo antes de modificarlo
+    const individuoMutado: Individuo = JSON.parse(JSON.stringify(individuo));
 
-  private mutarBitflip(individuo: Individuo) {
-    // Método de mutación ajustado
-    const individuoMutado = JSON.parse(JSON.stringify(individuo));
-    const rangoTotal = this.xMax - this.xMin;
+    // Iterar sobre cada cromosoma
+    individuoMutado.cromosomas.forEach((cromosoma, indiceCromosoma) => {
+      // Iterar sobre cada gen en el cromosoma
+      cromosoma.forEach((gen, indiceGen) => {
+        // Aplicar la mutación con la probabilidad definida
+        if (Math.random() < this.probabilidadMutacion) {
+          individuoMutado.cromosomas[indiceCromosoma][indiceGen] =
+            gen === 0 ? 1 : 0;
+        }
+      });
+    });
 
-    for (let i = 0; i < this.Lind; i++) {
-      if (Math.random() < this.probabilidadMutacion) {
-        // Mutar basado en una fracción del rango total
-        let cambio =
-          (Math.random() - 0.5) * 2 * this.probabilidadMutacion * rangoTotal;
-        individuoMutado.cromosoma[i] = Math.min(
-          this.xMax,
-          Math.max(this.xMin, individuoMutado.cromosoma[i] + cambio)
-        );
-      }
-    }
     return individuoMutado;
   }
 
@@ -290,23 +315,20 @@ class AlgoritmoGeneticoAsignacion {
     return padre;
   }
 
-  private seleccionarPadreRuleta() {
+  private seleccionarPadreRuleta(): Individuo {
     const r = Math.random();
-    const padre: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
+    let padre: Individuo = this.crearEstructuraIndividuoVacio();
+
     for (const individuo of this.poblacion) {
       if (r <= individuo.probabilidadAcumulada) {
-        padre.cromosoma = [...individuo.cromosoma]; // Copiar el cromosoma en lugar de asignarlo directamente
+        padre = {
+          ...individuo, // Copia todas las propiedades del individuo seleccionado
+          cromosomas: individuo.cromosomas.map((cromosoma) => [...cromosoma]), // Asegúrate de hacer una copia profunda de los cromosomas
+        };
         break;
       }
     }
+
     return padre;
   }
 
@@ -327,69 +349,60 @@ class AlgoritmoGeneticoAsignacion {
     return hijos;
   }
 
-  private cruzarUnPunto(padre1: Individuo, padre2: Individuo) {
-    const puntoCruce = Math.floor(Math.random() * this.Lind);
-    const hijo1: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
-    const hijo2: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
-
-    hijo1.cromosoma = hijo1.cromosoma.concat(
-      padre1.cromosoma.slice(0, puntoCruce)
-    );
-    hijo1.cromosoma = hijo1.cromosoma.concat(
-      padre2.cromosoma.slice(puntoCruce)
+  private cruzarUnPunto(padre1: Individuo, padre2: Individuo): Individuo[] {
+    // Seleccionar un punto de cruce al azar para cada cromosoma
+    const puntosCruce = this.arrCoeficiente.map((coef) =>
+      Math.floor(Math.random() * coef.Lind)
     );
 
-    hijo2.cromosoma = hijo2.cromosoma.concat(
-      padre2.cromosoma.slice(0, puntoCruce)
-    );
-    hijo2.cromosoma = hijo2.cromosoma.concat(
-      padre1.cromosoma.slice(puntoCruce)
-    );
+    const hijo1: Individuo = this.crearEstructuraIndividuoVacio();
+    const hijo2: Individuo = this.crearEstructuraIndividuoVacio();
+
+    // Realizar el cruce para cada par de cromosomas
+    for (let i = 0; i < this.arrCoeficiente.length; i++) {
+      if (padre1.cromosomas[i] && padre2.cromosomas[i]) {
+        hijo1.cromosomas[i] = padre1.cromosomas[i]
+          .slice(0, puntosCruce[i])
+          .concat(padre2.cromosomas[i].slice(puntosCruce[i]));
+        hijo2.cromosomas[i] = padre2.cromosomas[i]
+          .slice(0, puntosCruce[i])
+          .concat(padre1.cromosomas[i].slice(puntosCruce[i]));
+      } else {
+      }
+    }
+
+    // Actualizar el resto de propiedades de los hijos
+    this.actualizarPropiedadesIndividuo(hijo1);
+    this.actualizarPropiedadesIndividuo(hijo2);
 
     return [hijo1, hijo2];
   }
-  // Validar restricciones
-  private esIndividuoValido(individuo: Individuo): boolean {
-    let z = 0;
-    for (let j = 0; j < this.Lind; j++) {
-      z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-    }
-    individuo.fitness = z; // Asumiendo que quieres actualizar xi aquí.
 
-    for (let restriccion of this.arrRestriccion) {
-      switch (restriccion.operador) {
-        case '<=':
-          if (z > restriccion.value) return false;
-          break;
-        case '>=':
-          if (z < restriccion.value) return false;
-          break;
-        case '>':
-          if (z <= restriccion.value) return false;
-          break;
-        case '<':
-          if (z >= restriccion.value) return false;
-          break;
-        // Se asume que no hay otros operadores, pero aquí podrían añadirse si es necesario.
+  private crearEstructuraIndividuoVacio(): Individuo {
+    return {
+      cromosomas: [],
+      binario: '',
+      xi: 0,
+      fitness: 0,
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+      fx: 0,
+      valoresDecimalesXi: [], // Inicializar como arreglo vacío
+    };
+  }
+
+  private actualizarPropiedadesIndividuo(individuo: Individuo) {
+    individuo.binario = this.aplanarCromosomas(individuo.cromosomas).join('');
+    const { fitness, xi } = this.calcularFitnessXi(individuo.cromosomas);
+    individuo.fitness = fitness;
+    individuo.xi = xi;
+
+    // Recalcular valores decimales de xi
+    individuo.valoresDecimalesXi = individuo.cromosomas.map(
+      (cromosoma, index) => {
+        return this.binarioADecimal(cromosoma, this.arrCoeficiente[index]);
       }
-    }
-    return true;
+    );
   }
 
   private calculoFitnessTotal(): number {

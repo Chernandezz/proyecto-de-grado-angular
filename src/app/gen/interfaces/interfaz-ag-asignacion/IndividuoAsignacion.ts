@@ -1,9 +1,10 @@
 export interface Individuo {
   probabilidadAcumulada: number;
   probabilidad: number;
-  cromosoma: number[][];
-  binario: string;
+  cromosomas: number[][]; // Representa los segmentos de cada xi
+  binario: string; // Considerar cómo se manejará esto con cromosomas múltiples
   xi: number;
   fitness: number;
   fx: number;
+  valoresDecimalesXi: number[];
 }

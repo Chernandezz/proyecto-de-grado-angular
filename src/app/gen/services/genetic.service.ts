@@ -117,10 +117,14 @@ export class GeneticService {
         const worker = new Worker(
           new URL('./worker-ag-asignacion.worker', import.meta.url)
         );
+        console.log(newVariables);
+        debugger
         worker.postMessage(newVariables);
         worker.onmessage = (res) => {
           res.data.resultado.tipo = 'asignacion';
-
+          console.log(res.data.resultado);
+          debugger
+          
           this.colaAlgoritmos.push(res.data.resultado);
           this.marcarComoTerminado(res.data.resultado.tituloEjecucion);
           this.actualizarColaAlgoritmos();

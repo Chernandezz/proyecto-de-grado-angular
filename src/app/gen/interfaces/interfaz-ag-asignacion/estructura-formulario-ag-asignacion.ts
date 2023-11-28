@@ -9,7 +9,6 @@ export interface AlgorithmOptionsAsignacion {
   probCruce: number;
   probMutacion: number;
   tipo: string;
-  Lind: number;
   tipoCruce: string;
   tipoMutacion: string;
   tipoSeleccion: string;
@@ -21,9 +20,14 @@ export interface AlgorithmOptionsAsignacion {
 export interface arrCoeficiente {
   index: number;
   value: number;
+  Lind: number;
+  xMin: number;
+  xMax: number;
 }
 
+
 export interface arrRestriccion {
+  coeficientes: number[];
   operador: string;
   value: number;
 }
