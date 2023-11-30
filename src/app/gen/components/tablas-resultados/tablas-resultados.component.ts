@@ -23,7 +23,7 @@ export class TablasResultadosComponent {
     const mejorIndividuo = item.resultado.tablaFinal.reduce((prev, current) =>
       prev.fitness > current.fitness ? prev : current
     );
-    return mejorIndividuo.xi;
+    return mejorIndividuo.fitness;
   }
   
   ngOnInit(): void {
