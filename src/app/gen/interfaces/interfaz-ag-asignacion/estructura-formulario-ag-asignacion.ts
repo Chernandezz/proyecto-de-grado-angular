@@ -3,7 +3,6 @@ export interface AlgorithmOptionsAsignacion {
   arrCoeficiente: arrCoeficiente[];
   convergencia: boolean;
   elitismo: boolean;
-  numDecimales: number;
   numGeneraciones: number;
   numIndividuos: number;
   probCruce: number;
@@ -18,7 +17,6 @@ export interface AlgorithmOptionsAsignacion {
 }
 
 export interface arrCoeficiente {
-  index: number;
   value: number;
   Lind: number;
   xMin: number;
