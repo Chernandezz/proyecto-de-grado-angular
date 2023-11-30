@@ -51,6 +51,8 @@ class AlgoritmoGeneticoAsignacion {
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;
     this.poblacion = this.generarPoblacionInicial();
+    console.log(this.poblacion);
+    debugger;
     this.tituloEjecucion = agConfig.tituloEjecucion;
   }
 
@@ -65,10 +67,7 @@ class AlgoritmoGeneticoAsignacion {
       }
 
       poblacionInicial.push(individuo);
-      
     }
-    console.log(poblacionInicial);
-    debugger;
 
     this.actualizarProbabilidades(poblacionInicial);
     return poblacionInicial;
@@ -144,12 +143,11 @@ class AlgoritmoGeneticoAsignacion {
     individuo: Individuo,
     restriccion: arrRestriccion
   ): boolean {
-    
     let sumatoria = 0;
     restriccion.coeficientes.forEach((coef, index) => {
       sumatoria += coef * individuo.fenotipos[index];
     });
-    
+
     switch (restriccion.operador) {
       case '<=':
         return sumatoria <= restriccion.value;
@@ -166,13 +164,13 @@ class AlgoritmoGeneticoAsignacion {
 
   private actualizarProbabilidades(poblacion: Individuo[]) {
     let probabilidadAcumulada = 0;
-    let fxTotal = poblacion.reduce(
+    let fitnessTotal = poblacion.reduce(
       (total, individuo) => total + individuo.fitness,
       0
     );
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      poblacion[i].probabilidad = poblacion[i].fitness / fxTotal;
+      poblacion[i].probabilidad = poblacion[i].fitness / fitnessTotal;
       poblacion[i].probabilidadAcumulada =
         probabilidadAcumulada + poblacion[i].probabilidad;
       probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
