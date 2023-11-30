@@ -5,7 +5,7 @@
   <div class="custom-card">
     <div class="custom-title">Recolección de Coeficientes</div>
     <div *ngFor="let coeficiente of coeficientesArray; let i = index" class="coeficiente-row">
-      <span class="input-group-text custom-coeficiente-label">x{{ coeficiente.index }}</span>
+      <span class="input-group-text custom-coeficiente-label">x{{ i + 1}}</span>
       <input type="number" class="form-control custom-input" [(ngModel)]="coeficiente.value">
       <div class="rango-inputs">
         <label class="rango-label">xMin:</label>
@@ -128,11 +128,6 @@
               </div>
             </div>
             <div class="mb-3">
-              <label class="form-label">Decimales: </label>
-              <span>{{ formularioInicialAlgoritmo.controls['numDecimales'].value }}</span>
-              <input type="range" class="form-range" min="0" max="10" step="1" formControlName="numDecimales">
-            </div>
-            <div class="mb-3">
               <div class="form-check">
                 <label class="form-check-label">Detenerse en Convergencia</label>
                 <input type="checkbox" class="form-check-input" formControlName="convergencia">
@@ -145,6 +140,7 @@
             <div class="mb-3">
               <label class="form-label">Tam. de la población:</label>
               <input type="number" class="form-control" value="7" formControlName="numIndividuos">
+              <label class="form-label">Recomendado: {{this.totalLind}} a {{this.totalLind*2}}</label>
             </div>
           </div>
         </div>
