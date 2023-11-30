@@ -3,25 +3,29 @@ export interface AlgorithmOptionsAsignacion {
   arrCoeficiente: arrCoeficiente[];
   convergencia: boolean;
   elitismo: boolean;
-  numDecimales: number;
   numGeneraciones: number;
   numIndividuos: number;
   probCruce: number;
   probMutacion: number;
   tipo: string;
-  Lind: number;
   tipoCruce: string;
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+  xMax: number;
+  xMin: number;
 }
 
 export interface arrCoeficiente {
-  index: number;
   value: number;
+  Lind: number;
+  xMin: number;
+  xMax: number;
 }
 
+
 export interface arrRestriccion {
+  coeficientes: number[];
   operador: string;
   value: number;
 }

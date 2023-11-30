@@ -1,17 +1,10 @@
+import { Individuo } from "./IndividuoAsignacion";
+
 export interface ResultadoAlgoritmo {
-  tablaInicial: Tabla[];
+  tablaInicial: Individuo[];
   fitnessInicial: number;
-  tablaFinal: Tabla[];
+  tablaFinal: Individuo[];
   fitnessFinal: number;
   mejoresCromosomas: number[];
 }
 
-export interface Tabla {
-  probabilidadAcumulada: number;
-  probabilidad: number;
-  cromosoma: number[];
-  binario: string;
-  xi: number;
-  fitness: number;
-  fx: number;
-}

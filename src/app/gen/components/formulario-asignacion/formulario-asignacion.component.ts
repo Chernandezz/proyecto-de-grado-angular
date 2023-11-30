@@ -7,13 +7,13 @@ import {
   arrCoeficiente,
   arrRestriccion,
 } from '../../interfaces/interfaz-ag-asignacion/estructura-formulario-ag-asignacion';
+import { log2 } from 'mathjs';
 
 interface Formulario {
   arrRestriccion: arrRestriccion[];
   arrCoeficiente: arrCoeficiente[];
   convergencia: boolean;
   elitismo: boolean;
-  numDecimales: number;
   numGeneraciones: number;
   numIndividuos: number;
   probCruce: number;
@@ -24,6 +24,8 @@ interface Formulario {
   tipoMutacion: string;
   tipoSeleccion: string;
   tituloEjecucion: string;
+  xMax: number;
+  xMin: number;
 }
 
 @Component({
@@ -35,26 +37,29 @@ interface Formulario {
 export class FormularioAsignacionComponent {
   public asignacionCoeficientes: boolean = true;
   public asignacionRestricciones: boolean = false;
+  public totalLind: number = 0;
   public mostrarFormulario: boolean = false;
   public operadores: string[] = ['<', '>', '<=', '>='];
   public coeficientesArray: arrCoeficiente[] = [
     {
-      index: 1,
       value: 0,
+      Lind: 10, // Valor predeterminado o según tus requerimientos
+      xMin: 0, // Valor mínimo inicial
+      xMax: 10, // Valor máximo inicial
     },
   ];
 
   agregarCoeficiente() {
     this.coeficientesArray.push({
-      index: this.coeficientesArray.length + 1,
       value: 0,
+      Lind: 10, // Valor predeterminado o según tus requerimientos
+      xMin: 0,
+      xMax: 10, // Valor máximo inicial
     });
   }
 
   eliminarCoeficiente(index: number) {
     this.coeficientesArray.splice(index, 1);
-    // Reindexar los coeficientes restantes
-    this.coeficientesArray.forEach((coef, i) => (coef.index = i + 1));
   }
 
   eliminarRestriccion(index: number) {
@@ -65,6 +70,7 @@ export class FormularioAsignacionComponent {
 
   agregarRestriccion() {
     this.restriccionesArray.push({
+      coeficientes: new Array(this.coeficientesArray.length).fill(0),
       operador: '<=',
       value: 0,
     });
@@ -74,6 +80,7 @@ export class FormularioAsignacionComponent {
     this.asignacionCoeficientes = false;
     this.asignacionRestricciones = true;
     this.mostrarFormulario = false;
+    this.actualizarLindXi(this.coeficientesArray);
   }
 
   navegarACoeficientes(): void {
@@ -100,6 +107,7 @@ export class FormularioAsignacionComponent {
       0.1,
       [Validators.required, Validators.min(0), Validators.max(1)],
     ],
+    numDecimales: [2, Validators.min(0)],
     elitismo: false,
     convergencia: false,
     numGeneraciones: [1000, [Validators.required, Validators.min(5)]],
@@ -145,6 +153,14 @@ export class FormularioAsignacionComponent {
     this.router.navigate(['/genetico/resultados']);
   }
 
+  actualizarLindXi(coeficientes: arrCoeficiente[]) {
+    this.totalLind = 0;
+    coeficientes.forEach((coef) => {
+      coef.Lind = Math.ceil(log2(1 + (coef.xMax - coef.xMin)));
+      this.totalLind += coef.Lind;
+    });
+  }
+
   onSubmit() {
     this.verificarNombreEjecucion();
     if (this.formularioInicialAlgoritmo.invalid) {
@@ -154,6 +170,9 @@ export class FormularioAsignacionComponent {
     const tituloEjecucion =
       this.formularioInicialAlgoritmo.value['tituloEjecucion'];
     this.showToast(`${tituloEjecucion} - agregado con exito!`, true);
+    // Funcion para actualizar todos los lind de los xi
+
+    // Llamado al servicio para la ejecucion del algoritmo que se agrego a la cola
     this.geneticService.getFunctionAsignacion(
       this.formularioInicialAlgoritmo.value as Formulario,
       this.coeficientesArray,

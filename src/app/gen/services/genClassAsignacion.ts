@@ -1,6 +1,6 @@
-import * as math from 'mathjs';
-import { Individuo } from '../interfaces/Individuo';
-import { ResultadoAlgoritmo } from '../interfaces/Resultado';
+import { re } from 'mathjs';
+import { Individuo } from '../interfaces/interfaz-ag-asignacion/IndividuoAsignacion';
+import { ResultadoAlgoritmo } from '../interfaces/interfaz-ag-asignacion/Resultado-ag-asginacion';
 import {
   AlgorithmOptionsAsignacion,
   arrCoeficiente,
@@ -18,8 +18,8 @@ class AlgoritmoGeneticoAsignacion {
   public probabilidadMutacion!: number;
   public numIteraciones!: number;
   public convergencia!: boolean;
-  public Lind!: number;
   public tipo!: string;
+  public numDecimales!: number;
   public elitismo!: boolean;
   public poblacion!: Individuo[];
   public resultado!: ResultadoAlgoritmo;
@@ -32,15 +32,19 @@ class AlgoritmoGeneticoAsignacion {
 
   private initializeConfiguration(agConfig: AlgorithmOptionsAsignacion) {
     this.arrCoeficiente = agConfig.arrCoeficiente;
-    this.arrRestriccion = agConfig.arrRestriccion;
+    this.probabilidadMutacion = agConfig.probMutacion;
+    this.arrRestriccion = agConfig.arrRestriccion.map((restriccion) => ({
+      ...restriccion,
+      coeficientes:
+        restriccion.coeficientes ||
+        new Array(this.arrCoeficiente.length).fill(0),
+    }));
     this.tipoSeleccion = agConfig.tipoSeleccion;
+
     this.tamanoPoblacion = agConfig.numIndividuos;
     this.tipoCruce = agConfig.tipoCruce;
-    this.arrCoeficiente = agConfig.arrCoeficiente;
-    this.arrRestriccion = agConfig.arrRestriccion;
     this.tipoMutacion = agConfig.tipoMutacion;
     this.probabilidadCruce = agConfig.probCruce;
-    this.Lind = this.arrCoeficiente.length;
     this.numIteraciones = agConfig.numGeneraciones;
     this.convergencia = agConfig.convergencia;
     this.elitismo = agConfig.elitismo;
@@ -52,73 +56,130 @@ class AlgoritmoGeneticoAsignacion {
     const poblacionInicial: Individuo[] = [];
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      let valido = false;
-      const individuo: Individuo = {
-        cromosoma: [],
-        binario: '',
-        xi: 0,
-        fitness: 0, 
-        probabilidadAcumulada: 0,
-        probabilidad: 0,
-        fx: 0,
-      };
-      while (valido === false) {
-        valido = true;
-        const cromosoma = [];
-        for (let k = 0; k < this.Lind; k++) {
-          cromosoma.push(Math.random() < 0.5 ? 0 : 1);
-        }
-        individuo.cromosoma = [...cromosoma];
-        individuo.binario = cromosoma.join('');
-
-        // Calculo de Z/
-        let z = 0;
-        for (let j = 0; j < this.Lind; j++) {
-          z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-        }
-        // Verificar restricciones
-        for (let restriccion of this.arrRestriccion) {
-          if (valido) {
-            switch (restriccion.operador) {
-              case '<=':
-                valido = z > restriccion.value ? false : true;
-                break;
-              case '>=':
-                valido = z < restriccion.value ? false : true;
-                break;
-              case '>':
-                valido = z <= restriccion.value ? false : true;
-                break;
-              case '<':
-                valido = z >= restriccion.value ? false : true;
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        individuo.fitness = z;
+      let individuo: Individuo = this.crearIndividuo();
+      // Verificar restricciones hasta que el individuo sea válido
+      while (!this.esIndividuoValido(individuo)) {
+        individuo = this.crearIndividuo();
       }
+
       poblacionInicial.push(individuo);
     }
 
     this.actualizarProbabilidades(poblacionInicial);
-
     return poblacionInicial;
+  }
+
+  private crearIndividuo(): Individuo {
+    // Crear cromosomas basados en Lind para cada coeficiente
+    const genotipo = this.crearGenotipo();
+    const fenotipo = this.crearFenotipo(genotipo);
+
+    const z = this.calcularFitnessXi(fenotipo);
+    // Concatenar todos los cromosomas para crear la representación binaria
+    const binario = genotipo.map((cromosoma) => cromosoma.join('')).join('');
+
+    return {
+      genotipos: genotipo,
+      binario: binario,
+      fenotipos: fenotipo,
+      fitness: z,
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+    };
+  }
+
+  private binarioADecimal(cromosoma: number[]): number {
+    return parseInt(cromosoma.join(''), 2);
+  }
+
+  private crearGenotipo(): number[][] {
+    let genotipo = this.arrCoeficiente.map((coef) => {
+      return Array.from({ length: coef.Lind }, () =>
+        Math.random() < 0.5 ? 0 : 1
+      );
+    });
+    return genotipo;
+  }
+
+  // Formula para calcular el valor decimal de cada xi, entran los genotipos y retorna los fenotipos
+  private crearFenotipo(genotipo: number[][]): number[] {
+    let fenotipo: number[] = [];
+    genotipo.forEach((cromosoma, index) => {
+      fenotipo.push(
+        Math.ceil(
+          this.arrCoeficiente[index].xMin +
+            (this.binarioADecimal(cromosoma) *
+              (this.arrCoeficiente[index].xMax -
+                this.arrCoeficiente[index].xMin)) /
+              (Math.pow(2, this.arrCoeficiente[index].Lind) - 1)
+        )
+      );
+    });
+    return fenotipo;
+  }
+
+  private calcularFitnessXi(fenotipo: number[]): number {
+    let z = 0;
+    this.arrCoeficiente.forEach((coef, index) => {
+      z += coef.value * fenotipo[index];
+    });
+    return z;
+  }
+
+  private esIndividuoValido(individuo: Individuo): boolean {
+    for (let restriccion of this.arrRestriccion) {
+      if (!this.cumpleRestriccion(individuo, restriccion)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private cumpleRestriccion(
+    individuo: Individuo,
+    restriccion: arrRestriccion
+  ): boolean {
+    let sumatoria = 0;
+    restriccion.coeficientes.forEach((coef, index) => {
+      sumatoria += coef * individuo.fenotipos[index];
+    });
+
+    switch (restriccion.operador) {
+      case '<=':
+        return sumatoria <= restriccion.value;
+      case '>=':
+        return sumatoria >= restriccion.value;
+      case '>':
+        return sumatoria > restriccion.value;
+      case '<':
+        return sumatoria < restriccion.value;
+      default:
+        return true; // Manejar operadores desconocidos
+    }
   }
 
   private actualizarProbabilidades(poblacion: Individuo[]) {
     let probabilidadAcumulada = 0;
-    let fxTotal = poblacion.reduce(
+    let fitnessTotal = poblacion.reduce(
       (total, individuo) => total + individuo.fitness,
       0
     );
 
     for (let i = 0; i < this.tamanoPoblacion; i++) {
-      poblacion[i].probabilidad = poblacion[i].fitness / fxTotal;
+      poblacion[i].probabilidad = poblacion[i].fitness / fitnessTotal;
       poblacion[i].probabilidadAcumulada =
         probabilidadAcumulada + poblacion[i].probabilidad;
       probabilidadAcumulada = poblacion[i].probabilidadAcumulada;
+    }
+  }
+
+  private mutar(individuo: Individuo): void {
+    switch (this.tipoMutacion) {
+      case 'bit-flip':
+        this.mutarBitflip(individuo);
+        break;
+      default:
+        this.mutarBitflip(individuo);
     }
   }
 
@@ -146,32 +207,44 @@ class AlgoritmoGeneticoAsignacion {
 
         // Este ciclo continúa hasta que se llenen todos los hijos requeridos.
         let hijos = this.cruzar(padre1, padre2);
-        hijos = hijos.map((hijo) => this.mutar(hijo));
+
+        // Mutar los hijos
+        hijos.map((hijo) => this.mutar(hijo));
+
+        // Creacion de los fenotipos de los hijos
+        hijos[0].fenotipos = this.crearFenotipo(hijos[0].genotipos);
+        hijos[1].fenotipos = this.crearFenotipo(hijos[1].genotipos);
+
+        // Calculo Fitness hijos
+        hijos[0].fitness = this.calcularFitnessXi(hijos[0].fenotipos);
+        hijos[1].fitness = this.calcularFitnessXi(hijos[1].fenotipos);
+        
+        // Generacion Binario Hijos
+        hijos[0].binario = this.aplanarCromosomas(hijos[0].genotipos).join('');
+        hijos[1].binario = this.aplanarCromosomas(hijos[1].genotipos).join('');
+        
         hijos.forEach((hijo) => {
           if (this.esIndividuoValido(hijo)) {
             if (cantidadHijos > 0) {
               nuevaPoblacion.push(hijo);
               cantidadHijos--;
             }
-          } else {
-            // Si el individuo no es válido, puedes elegir ignorarlo o generar uno nuevo.
           }
         });
+
+
       }
 
       // Actualizar la población con los nuevos hijos válidos
       this.actualizarPoblacion(nuevaPoblacion);
 
-            
 
-      // El resto del código...
       let mejorCromosoma = this.poblacion.reduce(
-        (mejor, cromosoma) =>
-          cromosoma.fitness > mejor.fitness ? cromosoma : mejor,
+        (mejor, cromosomas) =>
+          cromosomas.fitness > mejor.fitness ? cromosomas : mejor,
         this.poblacion[0]
       );
       mejoresCromosomas.push(mejorCromosoma.fitness);
-
 
       if (this.convergencia) {
         if (this.verificarConvergencia()) {
@@ -202,54 +275,39 @@ class AlgoritmoGeneticoAsignacion {
     return true;
   }
 
+  private aplanarCromosomas(cromosomas: number[][]): number[] {
+    return cromosomas.reduce(
+      (acumulado, actual) => acumulado.concat(actual),
+      []
+    );
+  }
+
   private actualizarPoblacion(nuevaPoblacion: Individuo[]) {
-    for (const individuo of nuevaPoblacion) {
-      individuo['binario'] = individuo.cromosoma.join('');
-
-      // Calculo de Z/
-      let z = 0;
-      for (let j = 0; j < this.Lind; j++) {
-        z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-      }
-      individuo.xi = z;
-    }
-
-    let probabilidadAcumulada = 0;
-    let fxTotal = nuevaPoblacion.reduce(
+    let fitnessTotal = nuevaPoblacion.reduce(
       (total, individuo) => total + individuo.fitness,
       0
     );
 
-    for (let i = 0; i < this.tamanoPoblacion; i++) {
-      nuevaPoblacion[i].probabilidad = nuevaPoblacion[i].fitness / fxTotal;
-      nuevaPoblacion[i].probabilidadAcumulada =
-        probabilidadAcumulada + nuevaPoblacion[i].probabilidad;
-      probabilidadAcumulada = nuevaPoblacion[i].probabilidadAcumulada;
-    }
+    nuevaPoblacion.forEach((individuo, index) => {
+      individuo.probabilidad = individuo.fitness / fitnessTotal;
+      individuo.probabilidadAcumulada =
+        index === 0
+          ? individuo.probabilidad
+          : individuo.probabilidad + nuevaPoblacion[index - 1].probabilidad;
+    });
+
     this.poblacion = [...nuevaPoblacion];
   }
 
-  private mutar(individuo: Individuo) {
-    switch (this.tipoMutacion) {
-      case 'bit-flip':
-        individuo = this.mutarBitflip(individuo);
-        break;
-    }
-    return individuo;
-  }
-
-  private mutarBitflip(individuo: Individuo) {
-    // Método de mutación bit-flip
+  private mutarBitflip(individuo: Individuo): void {
     // Crear una copia del objeto individuo antes de modificarlo
-    const individuoMutado = JSON.parse(JSON.stringify(individuo));
-
-    for (let i = 0; i < this.Lind; i++) {
-      if (Math.random() < this.probabilidadMutacion) {
-        individuoMutado.cromosoma[i] =
-          individuoMutado.cromosoma[i] === 0 ? 1 : 0;
-      }
-    }
-    return individuoMutado;
+    individuo.genotipos.forEach((cromosoma) => {
+      cromosoma.forEach((gen, index) => {
+        if (Math.random() < this.probabilidadMutacion) {
+          cromosoma[index] = gen === 0 ? 1 : 0;
+        }
+      });
+    });
   }
 
   private seleccionarPadre() {
@@ -265,24 +323,19 @@ class AlgoritmoGeneticoAsignacion {
     return padre;
   }
 
-  private seleccionarPadreRuleta() {
+  private seleccionarPadreRuleta(): Individuo {
     const r = Math.random();
-    const padre: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
+
     for (const individuo of this.poblacion) {
       if (r <= individuo.probabilidadAcumulada) {
-        padre.cromosoma = [...individuo.cromosoma]; // Copiar el cromosoma en lugar de asignarlo directamente
-        break;
+        let individuoCopia = JSON.parse(JSON.stringify(individuo));
+        return individuoCopia;
       }
     }
-    return padre;
+
+    return JSON.parse(
+      JSON.stringify(this.poblacion[this.poblacion.length - 1])
+    );
   }
 
   private cruzar(padre1: Individuo, padre2: Individuo): Individuo[] {
@@ -302,77 +355,46 @@ class AlgoritmoGeneticoAsignacion {
     return hijos;
   }
 
-  private cruzarUnPunto(padre1: Individuo, padre2: Individuo) {
-    const puntoCruce = Math.floor(Math.random() * this.Lind);
-    const hijo1: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
-    const hijo2: Individuo = {
-      probabilidadAcumulada: 0,
-      probabilidad: 0,
-      cromosoma: [],
-      binario: '',
-      xi: 0,
-      fitness: 0,
-      fx: 0,
-    };
+  private cruzarUnPunto(padre1: Individuo, padre2: Individuo): Individuo[] {
+    // Seleccionar un punto de cruce al azar para cada cromosoma
+    const puntoCruce = Math.floor(Math.random() * padre1.genotipos.length - 1);
 
-    hijo1.cromosoma = hijo1.cromosoma.concat(
-      padre1.cromosoma.slice(0, puntoCruce)
-    );
-    hijo1.cromosoma = hijo1.cromosoma.concat(
-      padre2.cromosoma.slice(puntoCruce)
-    );
+    const hijo1: Individuo = this.crearEstructuraIndividuoVacio();
+    const hijo2: Individuo = this.crearEstructuraIndividuoVacio();
 
-    hijo2.cromosoma = hijo2.cromosoma.concat(
-      padre2.cromosoma.slice(0, puntoCruce)
-    );
-    hijo2.cromosoma = hijo2.cromosoma.concat(
-      padre1.cromosoma.slice(puntoCruce)
-    );
+    // Lo que se hace aqui en cruzar un punto no es tener el cromosoma completo y luego cortarlo
+    // lo que se hace en el la lista de genotipos se toma uno de los arreglos completo y se pasa al otro
+
+    for (let i = 0; i < padre1.genotipos.length; i++) {
+      if (i <= puntoCruce) {
+        hijo1.genotipos.push(padre1.genotipos[i]);
+        hijo2.genotipos.push(padre2.genotipos[i]);
+      } else {
+        hijo1.genotipos.push(padre2.genotipos[i]);
+        hijo2.genotipos.push(padre1.genotipos[i]);
+      }
+    }
 
     return [hijo1, hijo2];
   }
-  // Validar restricciones
-  private esIndividuoValido(individuo: Individuo): boolean {
-    let z = 0;
-    for (let j = 0; j < this.Lind; j++) {
-      z += individuo.cromosoma[j] * this.arrCoeficiente[j].value;
-    }
-    individuo.fitness = z; // Asumiendo que quieres actualizar xi aquí.
 
-    for (let restriccion of this.arrRestriccion) {
-      switch (restriccion.operador) {
-        case '<=':
-          if (z > restriccion.value) return false;
-          break;
-        case '>=':
-          if (z < restriccion.value) return false;
-          break;
-        case '>':
-          if (z <= restriccion.value) return false;
-          break;
-        case '<':
-          if (z >= restriccion.value) return false;
-          break;
-        // Se asume que no hay otros operadores, pero aquí podrían añadirse si es necesario.
-      }
-    }
-    return true;
+  private crearEstructuraIndividuoVacio(): Individuo {
+    return {
+      genotipos: [],
+      binario: '',
+      fenotipos: [],
+      fitness: 0,
+      probabilidadAcumulada: 0,
+      probabilidad: 0,
+    };
   }
 
   private calculoFitnessTotal(): number {
-    let xiTotal = 0;
+    let fitnessTotal = 0;
     for (const individuo of this.poblacion) {
-      xiTotal += individuo['fitness'];
+      fitnessTotal += individuo['fitness'];
     }
-    return xiTotal;
+    return fitnessTotal;
   }
 }
 
