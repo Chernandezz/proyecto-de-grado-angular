@@ -25,6 +25,8 @@ export class infoAlgoritmoComponent implements OnInit {
       this.tituloEjecucion = params.get('titulo') || '';
       if (this.tituloEjecucion) {
         this.retrieveAlgorithmInfo(this.tituloEjecucion);
+        console.log(this.infoAg);
+        
       }
     });
   }

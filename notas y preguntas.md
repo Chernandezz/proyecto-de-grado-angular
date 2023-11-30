@@ -8,7 +8,10 @@
 ? Orientacion en la forma como se genera la poblacion ya que es bastante confuso
 ? Orientacion en la creacion de las restricciones
 
+-> en la respuesta decir tambien el fitness
 
+- Hacer el info algoritmo para los de asignacion
+- en la info algoritmo de funcion poner la funcion, no aparece
 
 TODO:
 - Habilitar la opcion de maximizar y minimizar un ag
@@ -23,11 +26,7 @@ TODO:
 
 
 - Opcion de seleccionar un algoritmo y poder editarlo
-- Traer la funcion en el ag de funcion
-
-
 - revisar el algoritmo de asignacion
 - refactorizar
 - hacer responsive
-- mejorar tablas graficamente
 - Historial de ejecuciones (poder almacenar el historial en cache)

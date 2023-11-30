@@ -1,1 +1,84 @@
-<p>info-algoritmo-asignacion works!</p>
+<div class="bg-light p-4 rounded">
+  <h1 class="text-center mb-4">{{info.tituloEjecucion}}</h1>
+  <form id="formulario" class="w-100">
+    <div class="row">
+      <!-- Sección de Coeficientes y Restricciones -->
+      <div class="col-lg-12">
+        <div class="card mb-4 p-3">
+          <div class="row">
+            <div class="col-md-6 scrollable-area">
+              <h5>Coeficientes</h5>
+              <div *ngFor="let coeficiente of info.arrCoeficiente">
+                <label class="form-label">Coeficiente {{ coeficiente.index }}:</label>
+                <input readonly type="text" class="form-control" value="{{ coeficiente.value }}">
+              </div>
+            </div>
+            <div class="col-md-6 scrollable-area">
+              <h5>Restricciones</h5>
+              <div *ngFor="let restriccion of info.arrRestriccion">
+                <label class="form-label">Restricción:</label>
+                <input readonly type="text" class="form-control"
+                  value="X {{ restriccion.operador }} {{ restriccion.value }}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Sección de Configuración General -->
+      <div class="col-lg-12">
+        <div class="card mb-4 p-3">
+          <h4 class="card-title mb-3">Configuración General</h4>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-4 p-3">
+                <h4 class="card-title mb-3">Configuración</h4>
+                <div class="mb-3">
+                  <label class="form-label">Tipo de selección:</label>
+                  <input readonly type="text" class="form-control" value="{{info.tipoSeleccion}}">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Tipo de cruce:</label>
+                  <input readonly type="text" class="form-control" value="{{info.tipoCruce}}">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Tipo de mutación:</label>
+                  <input readonly type="text" class="form-control" value="{{info.tipoMutacion}}">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card mb-4 p-3">
+                <div class="mb-3">
+                  <label class="form-label">Prob. de cruce:</label>
+                  <input readonly type="text" class="form-control" value="{{info.probabilidadCruce}}">
+                </div>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <label class="form-check-label">Elitismo</label>
+                    <input type="checkbox" class="form-check-input" disabled [checked]="info.elitismo">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <div class="form-check">
+                    <label class="form-check-label">Detenerse en Convergencia</label>
+                    <input type="checkbox" class="form-check-input" disabled [checked]="info.convergencia">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Num. de iteraciones:</label>
+                  <input readonly type="text" class="form-control" value="{{info.numIteraciones}}">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Tam. de la población:</label>
+                  <input readonly type="text" class="form-control" value="{{info.tamanoPoblacion}}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </form>
+</div>
